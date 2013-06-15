@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString *outputDir;
+    NSString *outputDir = nil;
     int ch;
     while ((ch = getopt_long(argc, argv, "d:", longopts, NULL)) != -1)
         switch (ch)

@@ -186,7 +186,12 @@
     NSInteger saved = _index;
     while (*s)
     {
-        if (_index >= _limit && ![self _refill]) return NO;
+        if (_index >= _limit && ![self _refill]) {
+#ifndef ARC_ENABLED
+            [pool drain];
+#endif            
+            return NO;
+        }
         if (cstring[_index] != *s)
         {
 #ifndef ARC_ENABLED
