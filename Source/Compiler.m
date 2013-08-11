@@ -113,7 +113,7 @@
     NSMutableString *declarations = [NSMutableString new];
     NSMutableString *definitions  = [NSMutableString new];
     if (self.caseInsensitive) {
-        [imports appendString:@"#define __PEG_PARSER_CASE_INSENSITIVE__\n"];
+        [imports appendString:@"\n#define __PEG_PARSER_CASE_INSENSITIVE__\n"];
     }
    
     if(self.extraCode) {
