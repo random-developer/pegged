@@ -69,7 +69,6 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorC
 	NSMutableDictionary *_rules;
 	
 	// The current string position
-	const char *_cstring;
 	NSUInteger _index;
 	NSUInteger _limit;
 		
@@ -279,7 +278,8 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorC
 - (BOOL)matchRule:(NSString *)ruleName startIndex:(NSInteger)startIndex asserted:(BOOL)asserted
 {
     NSArray *rules = [_rules objectForKey: ruleName];
-
+	NSInteger lastIndex = _index;
+	
 	// We are in an error state. Just stop.
 	if (_lastError)
 		return NO;
@@ -295,7 +295,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorC
 	}
 
 	if (asserted)
-		[self setErrorWithMessage: [NSString stringWithFormat: @"Unmatched%@", ruleName] location:startIndex length:(_index - startIndex)];
+		[self setErrorWithMessage: [NSString stringWithFormat: @"Unmatched%@", ruleName] location:lastIndex length:(_index - lastIndex)];
 	
     return NO;
 }
@@ -303,9 +303,9 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorC
 - (BOOL)matchString:(char *)literal startIndex:(NSInteger)startIndex asserted:(BOOL)asserted
 {
 	NSInteger saved = _index;
-
+	
 	while (*literal) {
-		if ((_index >= _limit) || (_cstring[_index] != *literal)) {
+		if ((_index >= _limit) || ([_string characterAtIndex: _index] != *literal)) {
 			_index = saved;
 			
 			if (asserted)
@@ -336,6 +336,16 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorC
 
 - (void)setErrorWithMessage:(NSString *)message location:(NSInteger)location length:(NSInteger)length
 {
+	if (length == 0) {
+		if (location < _string.length) {
+			length = 1;
+		}
+		else if (location > 0) {
+			location --;
+			length = 1;
+		}
+	}
+		
 	if (!_lastError)
 		_lastError = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey: PEGParserLocalizedString(message), PEGParserErrorTypeKey: message, PEGParserErrorStringLocationKey: @(location), PEGParserErrorStringLengthKey: @(length), PEGParserErrorStringKey: [_string copy]}];
 }
@@ -2132,18 +2142,16 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
     return [_string substringWithRange:NSMakeRange(begin, len)];
 }
 
-- (BOOL)parseString:(NSString *)string usingContext:(NSDictionary *)context result:(id *)result
+- (BOOL)parseString:(NSString *)string result:(id *)result
 {
 	// Prepare parser input
 	_string = string;
-	#ifndef __PEG_PARSER_CASE_INSENSITIVE__
-		_cstring = [_string UTF8String];
-	#else
-		_cstring = [[_string lowercaseString] UTF8String];
+	#ifdef __PEG_PARSER_CASE_INSENSITIVE__
+		_string = [_string lowercaseString];
 	#endif
 		
     // Setup capturing limits
-	_limit  = [_string lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+	_limit  = _string.length;
     _index  = 0;
 	
 	_captures = [NSMutableArray new];
@@ -2151,7 +2159,6 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 
 	_captureStart= _captureEnd= _index;
     _capturing = YES;
-	_context = context;
     
 	// Do string matching
     BOOL matched = [self matchRule: @"Grammar" startIndex:_index asserted:YES];
@@ -2188,8 +2195,8 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			// Push result
 			if (result) {
 				// Set parsing range for diagnostics
-				if ([result respondsToSelector: @selector(setSourceString:range:context:)])
-					[result setSourceString:_string range:capture.parsedRange context:context];
+				if ([result respondsToSelector: @selector(setSourceString:range:)])
+					[result setSourceString:_string range:capture.parsedRange];
 				
 				[self pushResult: result];
 			}
@@ -2202,7 +2209,6 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 	
     // Cleanup parser
     _string = nil;
-    _cstring = nil;
 	_actionResults = nil;
 	_context = nil;
 	

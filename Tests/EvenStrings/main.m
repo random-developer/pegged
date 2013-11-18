@@ -29,7 +29,7 @@ int main(int argc, const char * argv[])
                 string = [string substringFromIndex:1];
             
             EvenParser *parser = [EvenParser new];
-            BOOL retval = [parser parseString:string usingContext:nil result:NULL];
+            BOOL retval = [parser parseString:string result:NULL];
             
             if (retval != shouldParse)
             {

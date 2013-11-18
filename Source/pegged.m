@@ -78,7 +78,7 @@ int main (int argc, char *argv[])
     Compiler  *compiler = [Compiler new];
     PEGParser *parser   = [PEGParser new];
     parser.compiler = compiler;
-    BOOL retval = [parser parseString:string usingContext:nil result:NULL];
+    BOOL retval = [parser parseString:string result:NULL];
     if (retval)
     {
         NSString *fileWithoutExtension = [path stringByDeletingPathExtension];

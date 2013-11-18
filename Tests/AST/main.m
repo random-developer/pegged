@@ -31,7 +31,7 @@ BOOL checkError(NSString *equation)
 	ASTParser *parser     = [ASTParser new];
 	ASTNode *node;
 	
-	BOOL matched = [parser parseString:expression usingContext:nil result:&node];
+	BOOL matched = [parser parseString:expression result:&node];
 	
 	if (matched || ![parser.lastError.localizedDescription isEqual: expectedErrorName] || ![parser.lastError.userInfo[ASTParserErrorStringLocationKey] isEqual: expectedErrorLocation] || ![parser.lastError.userInfo[ASTParserErrorStringLengthKey] isEqual: expectedErrorLength]) {
 		NSLog(@"Expected error: '%@' at (%@,%@). Got '%@' at (%@,%@).", expectedErrorName, expectedErrorLocation, expectedErrorLength, parser.lastError.localizedDescription, parser.lastError.userInfo[ASTParserErrorStringLocationKey], parser.lastError.userInfo[ASTParserErrorStringLengthKey]);
@@ -63,7 +63,7 @@ BOOL checkValue(NSString *equation)
 	ASTParser *parser     = [ASTParser new];
 	ASTNode *node;
 	
-	BOOL matched = [parser parseString:expression usingContext:nil result:&node];
+	BOOL matched = [parser parseString:expression result:&node];
 	
 	if (!matched || (result.integerValue != node.evaluate) || (parsingRangeLocation.integerValue != node.parsingRange.location) || (parsingRangeLength.integerValue != node.parsingRange.length))
 	{

@@ -34,7 +34,7 @@ int main (int argc, const char * argv[])
             Calculator *calculator = [Calculator new];
             CalcParser *parser     = [CalcParser new];
             parser.calculator = calculator;
-            BOOL retval = [parser parseString:expression usingContext:nil result:NULL];
+            BOOL retval = [parser parseString:expression result:NULL];
             if (!retval || ![result isEqualToNumber:calculator.result])
             {
                 NSString *output = [NSString stringWithFormat:@"%@:%lu: error: %@!=%@ (== %@)", file, line, expression, result, calculator.result];
