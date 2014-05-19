@@ -294,7 +294,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **er
 	}
 		
 	if (!_lastError)
-		_lastError = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey: ParserClassLocalizedString(message), ParserClassErrorTypeKey: message, ParserClassErrorStringLocationKey: @(location), ParserClassErrorStringLengthKey: @(length), ParserClassErrorStringKey: [_string copy]}];
+		_lastError = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey: ParserClassLocalizedString(message), ParserClassErrorTypeKey: message, ParserClassErrorStringLocationKey: @(location), ParserClassErrorStringLengthKey: @(length), ParserClassErrorStringKey: _string ? [_string copy] : [NSNull null]}];
 }
 
 - (void)clearError
