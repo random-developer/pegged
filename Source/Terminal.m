@@ -12,26 +12,32 @@
 
 @implementation Terminal
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendFormat:@"    if (%@%@) return NO;\n",
+    [code appendFormat:@"if (%@%@)\n\treturn NO;\n",
      self.inverted ? @"" : @"!", [self condition]];
     
+	NSString *acceptanceCode = self.compileIfAccepted;
+	
+	if (acceptanceCode)
+		[code appendFormat: @"else\n\t%@\n", self.compileIfAccepted];
+	
     return code;
 }
 
 
-- (NSString *) condition
+- (NSString *)condition
 {
     return nil;
 }
 
+- (NSString *)compileIfAccepted
+{
+	return nil;
+}
 
 @end

@@ -8,32 +8,25 @@
 
 #import "Node.h"
 
-
 @implementation Node
 
-@synthesize inverted    = _inverted;
+#pragma mark - Public Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
-
-+ (id) node
++ (id)node
 {
-    return [[[self class] new] autorelease];
+    return [[self class] new];
 }
 
 
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName
 {
     return nil;
 }
 
 
-- (void) invert
+- (void)invert
 {
     self.inverted = !self.inverted;
 }
-
 
 @end

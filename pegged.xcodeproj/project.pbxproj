@@ -22,9 +22,16 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		79880669177C7AF60003B729 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		79880676177C7B1B0003B729 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79880674177C7B1B0003B729 /* main.m */; };
+		79880677177C7F3C0003B729 /* ASTParser.peg in Sources */ = {isa = PBXBuildFile; fileRef = 79880670177C7B1B0003B729 /* ASTParser.peg */; };
+		79880678177C7F4A0003B729 /* ASTNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 79880672177C7B1B0003B729 /* ASTNode.m */; };
+		7988067D177C94D70003B729 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7988067C177C94D70003B729 /* Parser.m */; };
+		79880680177CE7E80003B729 /* NSString+PrettyPrinting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7988067F177CE7E70003B729 /* NSString+PrettyPrinting.m */; };
+		79880681177CF3D40003B729 /* NSString+PrettyPrinting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7988067F177CE7E70003B729 /* NSString+PrettyPrinting.m */; };
+		79880685177D0A9D0003B729 /* Fail.m in Sources */ = {isa = PBXBuildFile; fileRef = 79880684177D0A9B0003B729 /* Fail.m */; };
 		8DD76F9A0486AA7600D96B5E /* pegged.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* pegged.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
-		8DD76F9F0486AA7600D96B5E /* pegged.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* pegged.1 */; };
 		BE3FF57910EDF8000020AEB9 /* Subrule.m in Sources */ = {isa = PBXBuildFile; fileRef = BE3FF57810EDF8000020AEB9 /* Subrule.m */; };
 		BE3FF59010EE06890020AEB9 /* Terminal.m in Sources */ = {isa = PBXBuildFile; fileRef = BE3FF58F10EE06890020AEB9 /* Terminal.m */; };
 		BE3FF60210EE11040020AEB9 /* Code.m in Sources */ = {isa = PBXBuildFile; fileRef = BE3FF60110EE11040020AEB9 /* Code.m */; };
@@ -53,6 +60,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
+		7988066B177C7AF60003B729 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.peg";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).h",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).m",
+			);
+			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"";
+		};
 		BE3FF92E10F0ED4B0020AEB9 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -63,7 +82,7 @@
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).h",
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).m",
 			);
-			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir ${DERIVED_FILE_DIR} ${INPUT_FILE_PATH}";
+			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		BE94313610F8315100FA4E0A /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -75,11 +94,18 @@
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).h",
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).m",
 			);
-			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir ${DERIVED_FILE_DIR} ${INPUT_FILE_PATH}";
+			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		79880663177C7AF60003B729 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
+			remoteInfo = pegged;
+		};
 		BE3FF92C10F0ED200020AEB9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -110,23 +136,23 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-				8DD76F9F0486AA7600D96B5E /* pegged.1 in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* pegged.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pegged.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* pegged_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pegged_Prefix.pch; sourceTree = "<group>"; };
+		7988066F177C7AF60003B729 /* AST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AST; sourceTree = BUILT_PRODUCTS_DIR; };
+		79880670177C7B1B0003B729 /* ASTParser.peg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ASTParser.peg; sourceTree = "<group>"; };
+		79880671177C7B1B0003B729 /* ASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTNode.h; sourceTree = "<group>"; };
+		79880672177C7B1B0003B729 /* ASTNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASTNode.m; sourceTree = "<group>"; };
+		79880673177C7B1B0003B729 /* equations.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = equations.txt; sourceTree = "<group>"; };
+		79880674177C7B1B0003B729 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7988067B177C94D70003B729 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
+		7988067C177C94D70003B729 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
+		7988067E177CE7E60003B729 /* NSString+PrettyPrinting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PrettyPrinting.h"; sourceTree = "<group>"; };
+		7988067F177CE7E70003B729 /* NSString+PrettyPrinting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PrettyPrinting.m"; sourceTree = "<group>"; };
+		79880682177D017D0003B729 /* errors.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = errors.txt; sourceTree = "<group>"; };
+		79880683177D0A9A0003B729 /* Fail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fail.h; sourceTree = "<group>"; };
+		79880684177D0A9B0003B729 /* Fail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Fail.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* pegged */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pegged; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE3FF57710EDF8000020AEB9 /* Subrule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Subrule.h; sourceTree = "<group>"; };
 		BE3FF57810EDF8000020AEB9 /* Subrule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Subrule.m; sourceTree = "<group>"; };
@@ -168,7 +194,7 @@
 		BECEF81810DB3CA50067BA1E /* PEGParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEGParser.m; sourceTree = "<group>"; };
 		BECEF82410DC1F4F0067BA1E /* Compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Compiler.h; sourceTree = "<group>"; };
 		BECEF82510DC1F4F0067BA1E /* Compiler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Compiler.m; sourceTree = "<group>"; };
-		BECEF83510DC4EF00067BA1E /* PEGParser.peg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PEGParser.peg; sourceTree = "<group>"; };
+		BECEF83510DC4EF00067BA1E /* PEGParser.peg */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = PEGParser.peg; sourceTree = "<group>"; };
 		BEDCA7C510F145CE003C0737 /* equations.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = equations.txt; sourceTree = "<group>"; };
 		BEDCAA0A10F82865003C0737 /* EvenParser.peg */ = {isa = PBXFileReference; explicitFileType = sourcecode; fileEncoding = 4; path = EvenParser.peg; sourceTree = "<group>"; };
 		BEDCAA2010F8291A003C0737 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -179,6 +205,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		79880668177C7AF60003B729 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79880669177C7AF60003B729 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -221,6 +255,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7988067A177C94C50003B729 /* Template */,
 				BEDCAA2610F82C46003C0737 /* Condition.h */,
 				BEDCAA2710F82C46003C0737 /* Condition.m */,
 				BE3FF7D810EEFF540020AEB9 /* LookAhead.h */,
@@ -235,6 +270,8 @@
 				BE3FF57810EDF8000020AEB9 /* Subrule.m */,
 				BE96300210EAE93D007629F6 /* Action.h */,
 				BE96300310EAE93D007629F6 /* Action.m */,
+				79880683177D0A9A0003B729 /* Fail.h */,
+				79880684177D0A9B0003B729 /* Fail.m */,
 				BE96301B10EAEE98007629F6 /* CClass.h */,
 				BE96301C10EAEE98007629F6 /* CClass.m */,
 				BECEF82410DC1F4F0067BA1E /* Compiler.h */,
@@ -260,6 +297,8 @@
 				BE9431E210F919F400FA4E0A /* Version.m */,
 				BE94329910FA6A0500FA4E0A /* Property.h */,
 				BE94329A10FA6A0500FA4E0A /* Property.m */,
+				7988067E177CE7E60003B729 /* NSString+PrettyPrinting.h */,
+				7988067F177CE7E70003B729 /* NSString+PrettyPrinting.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -278,13 +317,37 @@
 				8DD76FA10486AA7600D96B5E /* pegged */,
 				BE3FF91D10F0ECF90020AEB9 /* Calculator */,
 				BE94313A10F8315100FA4E0A /* EvenStrings */,
+				7988066F177C7AF60003B729 /* AST */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7912E0D8177C76B70058141C /* AST */ = {
+			isa = PBXGroup;
+			children = (
+				79880670177C7B1B0003B729 /* ASTParser.peg */,
+				79880671177C7B1B0003B729 /* ASTNode.h */,
+				79880672177C7B1B0003B729 /* ASTNode.m */,
+				79880682177D017D0003B729 /* errors.txt */,
+				79880673177C7B1B0003B729 /* equations.txt */,
+				79880674177C7B1B0003B729 /* main.m */,
+			);
+			path = AST;
+			sourceTree = "<group>";
+		};
+		7988067A177C94C50003B729 /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				7988067B177C94D70003B729 /* Parser.h */,
+				7988067C177C94D70003B729 /* Parser.m */,
+			);
+			path = Template;
 			sourceTree = "<group>";
 		};
 		BE3FF91210F0E9EA0020AEB9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				7912E0D8177C76B70058141C /* AST */,
 				BE3FF91310F0E9EA0020AEB9 /* Calculator */,
 				BEDCAA0910F8282F003C0737 /* EvenStrings */,
 			);
@@ -324,13 +387,32 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		79880661177C7AF60003B729 /* AST */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7988066C177C7AF60003B729 /* Build configuration list for PBXNativeTarget "AST" */;
+			buildPhases = (
+				79880664177C7AF60003B729 /* Sources */,
+				79880668177C7AF60003B729 /* Frameworks */,
+				7988066A177C7AF60003B729 /* ShellScript */,
+				79880686177D0D510003B729 /* ShellScript */,
+			);
+			buildRules = (
+				7988066B177C7AF60003B729 /* PBXBuildRule */,
+			);
+			dependencies = (
+				79880662177C7AF60003B729 /* PBXTargetDependency */,
+			);
+			name = AST;
+			productName = Calculator;
+			productReference = 7988066F177C7AF60003B729 /* AST */;
+			productType = "com.apple.product-type.tool";
+		};
 		8DD76F960486AA7600D96B5E /* pegged */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "pegged" */;
 			buildPhases = (
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
-				8DD76F9E0486AA7600D96B5E /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -401,6 +483,7 @@
 			targets = (
 				8DD76F960486AA7600D96B5E /* pegged */,
 				BE3FF91C10F0ECF90020AEB9 /* Calculator */,
+				79880661177C7AF60003B729 /* AST */,
 				BE94312C10F8315100FA4E0A /* EvenStrings */,
 				BEDCA80A10F149B6003C0737 /* Tests */,
 			);
@@ -408,6 +491,32 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		7988066A177C7AF60003B729 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${TARGET_BUILD_DIR}/${EXECUTABLE_NAME}\" \"${PROJECT_DIR}/Tests/AST/equations.txt\"\n";
+		};
+		79880686177D0D510003B729 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${TARGET_BUILD_DIR}/${EXECUTABLE_NAME}\" \"${PROJECT_DIR}/Tests/AST/errors.txt\" -e";
+		};
 		BE94313510F8315100FA4E0A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -437,6 +546,17 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		79880664177C7AF60003B729 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79880677177C7F3C0003B729 /* ASTParser.peg in Sources */,
+				79880678177C7F4A0003B729 /* ASTNode.m in Sources */,
+				79880676177C7B1B0003B729 /* main.m in Sources */,
+				79880681177CF3D40003B729 /* NSString+PrettyPrinting.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DD76F990486AA7600D96B5E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -460,6 +580,9 @@
 				BEDCAA2810F82C46003C0737 /* Condition.m in Sources */,
 				BE9431E310F919F400FA4E0A /* Version.m in Sources */,
 				BE94329B10FA6A0500FA4E0A /* Property.m in Sources */,
+				7988067D177C94D70003B729 /* Parser.m in Sources */,
+				79880680177CE7E80003B729 /* NSString+PrettyPrinting.m in Sources */,
+				79880685177D0A9D0003B729 /* Fail.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +608,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		79880662177C7AF60003B729 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* pegged */;
+			targetProxy = 79880663177C7AF60003B729 /* PBXContainerItemProxy */;
+		};
 		BE3FF92D10F0ED200020AEB9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DD76F960486AA7600D96B5E /* pegged */;
@@ -512,6 +640,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -519,6 +648,17 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
+				LD_NO_PIE = YES;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__DATA,
+					HDRTEMP,
+					Source/Template/Parser.h,
+					"-sectcreate",
+					__DATA,
+					SRCTEMP,
+					Source/Template/Parser.m,
+				);
 				PRODUCT_NAME = pegged;
 			};
 			name = Debug;
@@ -527,11 +667,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
+				LD_NO_PIE = YES;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__DATA,
+					HDRTEMP,
+					Source/Template/Parser.h,
+					"-sectcreate",
+					__DATA,
+					SRCTEMP,
+					Source/Template/Parser.m,
+				);
 				PRODUCT_NAME = pegged;
 			};
 			name = Release;
@@ -545,6 +698,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -555,6 +709,39 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		7988066D177C7AF60003B729 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = AST;
+			};
+			name = Debug;
+		};
+		7988066E177C7AF60003B729 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = AST;
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -562,10 +749,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = Calculator;
 			};
@@ -575,9 +765,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = Calculator;
 				ZERO_LINK = NO;
@@ -588,10 +781,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = EvenStrings;
 			};
@@ -601,9 +797,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/pegged_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = EvenStrings;
 				ZERO_LINK = NO;
@@ -649,6 +848,15 @@
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
 				1DEB927A08733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7988066C177C7AF60003B729 /* Build configuration list for PBXNativeTarget "AST" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7988066D177C7AF60003B729 /* Debug */,
+				7988066E177C7AF60003B729 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

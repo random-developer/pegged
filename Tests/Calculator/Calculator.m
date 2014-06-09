@@ -26,14 +26,6 @@ typedef CGFloat (^BinaryOp)(CGFloat left, CGFloat right);
     return self;
 }
 
-- (void) dealloc
-{
-    [_formatter release];
-    [_stack release];
-    
-    [super dealloc];
-}
-
 - (void) performBinaryOperation:(BinaryOp)operation
 {
     NSNumber *right = [_stack lastObject];

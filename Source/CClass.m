@@ -78,31 +78,21 @@ static void setbits(unsigned char bitset[], const char *cstring, BOOL caseInsens
     }
 }
 
-@implementation CClass
-
-@synthesize caseInsensitive = _caseInsensitive;
-@synthesize string = _string;
-
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
+@interface CClass ()
 {
-    [_string release];
-    [_repr release];
+    NSString *_string;
+    NSString *_repr;
     
-    [super dealloc];
+    BOOL _caseInsensitive;
 }
 
+@end
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Terminal Methods
-//==================================================================================================
+@implementation CClass
 
-- (NSString *) condition
+#pragma mark - Terminal Methods
+
+- (NSString *)condition
 {
     if (!_repr)
     {
@@ -120,22 +110,19 @@ static void setbits(unsigned char bitset[], const char *cstring, BOOL caseInsens
             ptr += sprintf(ptr, "\\%03o", bitset[c]);
         _repr = [NSString stringWithUTF8String:string];
     }
-    return [NSString stringWithFormat:@"[parser matchClass:(unsigned char *)\"%@\"]", _repr];
+    return [NSString stringWithFormat:@"[parser matchClass: (unsigned char *)\"%@\"]", _repr];
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-+ (id) cclassFromString:(NSString *)class;
++ (id)cclassFromString:(NSString *)class;
 {
-    return [[[[self class] alloc] initWithString:class] autorelease];
+    return [[[self class] alloc] initWithString:class];
 }
 
 
-- (id) initWithString:(NSString *)class
+- (id)initWithString:(NSString *)class
 {
     self = [super init];
     

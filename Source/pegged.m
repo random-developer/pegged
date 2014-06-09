@@ -5,9 +5,6 @@
 //  Created by Matt Diephouse on 12/17/09.
 //  This code is in the public domain.
 //
-
-#import <Foundation/Foundation.h>
-
 #import "Compiler.h"
 #import "PEGParser.h"
 #import "Version.h"
@@ -28,9 +25,7 @@ static struct option longopts[] = {
 
 int main (int argc, char *argv[])
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSString *outputDir = nil;
+    NSString *outputDir;
     int ch;
     while ((ch = getopt_long(argc, argv, "d:", longopts, NULL)) != -1)
         switch (ch)
@@ -83,8 +78,7 @@ int main (int argc, char *argv[])
     Compiler  *compiler = [Compiler new];
     PEGParser *parser   = [PEGParser new];
     parser.compiler = compiler;
-    BOOL retval = [parser parseString:string];
-    [parser release];
+    BOOL retval = [parser parseString:string result:NULL];
     if (retval)
     {
         NSString *fileWithoutExtension = [path stringByDeletingPathExtension];
@@ -101,8 +95,6 @@ int main (int argc, char *argv[])
         fprintf(stderr, "syntax error\n");
     }
 
-    [compiler release];
 
-    [pool drain];
     return !retval;
 }

@@ -8,47 +8,25 @@
 
 #import "Code.h"
 
-
 @implementation Code
 
-@synthesize code = _code;
+#pragma mark - Node Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
+- (NSString *)compile:(NSString *)failLabel
 {
-    [_code release];
-    
-    [super dealloc];
+    return [NSString stringWithFormat:@"%@;\n", self.code];
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Node Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-- (NSString *) compile:(NSString *)failLabel
++ (id)codeWithString:(NSString *)code
 {
-    return [NSString stringWithFormat:@"    %@;\n", self.code];
+    return [[[self class] alloc] initWithString:code];
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
-
-+ (id) codeWithString:(NSString *)code
-{
-    return [[[[self class] alloc] initWithString:code] autorelease];
-}
-
-
-- (id) initWithString:(NSString *)code
+- (id)initWithString:(NSString *)code
 {
     self = [super init];
     

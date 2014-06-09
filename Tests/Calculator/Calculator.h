@@ -6,9 +6,6 @@
 //  This code is in the public domain.
 //
 
-#import <Foundation/Foundation.h>
-
-
 @interface Calculator : NSObject
 {
     NSNumberFormatter *_formatter;
@@ -17,7 +14,7 @@
     BOOL _negative;
 }
 
-@property (readonly) NSNumber *result;
+@property (weak, readonly) NSNumber *result;
 
 - (void) add;
 - (void) divide;

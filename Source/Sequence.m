@@ -10,21 +10,22 @@
 
 #import "Compiler.h"
 
+@interface Sequence ()
+{
+	NSMutableArray *_nodes;
+}
+
+@end
+
 @implementation Sequence
 
-@synthesize nodes = _nodes;
+#pragma mark - NSObject Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (id) init
+- (id)init
 {
     self = [super init];
     
-    if (self)
-    {
+    if (self) {
         _nodes = [NSMutableArray new];
     }
     
@@ -32,50 +33,34 @@
 }
 
 
-- (void) dealloc
-{
-    [_nodes release];
-    
-    [super dealloc];
-}
+#pragma mark - Node Methods
 
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Node Methods
-//==================================================================================================
-
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName
 {
     NSMutableString *code = [NSMutableString string];
     
     if (self.inverted)
-    {
-        [code appendFormat:@"    [parser invert:^(%@ *parser){\n", parserClassName];
-    }
+        [code appendFormat:@"return [parser invertWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
     
-    for (Node *node in self.nodes)
-        [code appendString:[node compile:parserClassName]];
+    for (Node *node in self.nodes) {
+        [code appendString:[[[node compile:parserClassName] stringByAddingIndentationWithCount: (self.inverted ? 1 : 0)] stringByRemovingTrailingWhitespace]];
+		[code appendString: @"\n\n"];
+	}
     
-    if (self.inverted)
-    {
-        [code appendString:@"    return YES;"];
-        [code appendString:@"    }];\n"];
+    if (self.inverted) {
+        [code appendString:@"\treturn YES;\n"];
+        [code appendString:@"}];\n"];
     }
     
     return code;
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-- (void) append:(Node *)node
+- (void)append:(Node *)node
 {
     [_nodes addObject:node];
 }
-
 
 @end

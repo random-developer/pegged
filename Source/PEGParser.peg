@@ -9,18 +9,24 @@
 # [2] http://piumarta.com/software/peg/
 # 
 
-@property (retain) Compiler *compiler;
+@import "Compiler.h";
+@class Compiler;
+
+@property (strong) Compiler *compiler;
 
 # Hierarchical syntax
 Grammar <- Spacing Declaration* Spacing Definition+ EndOfFile
 
 Declaration <- OPTION "case-insensitive" HorizSpace* EndOfDecl { self.compiler.caseInsensitive = YES; }
-             / OPTION "match-debug" HorizSpace* EndOfDecl { self.compiler.matchDebug = YES; }
+			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl { [self.compiler parsedImport:text]; }
+			 / CLASSDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedClassPrototype: text]; }
+			 / PROTOCOLDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedProtocolPrototype: text]; }
              / PROPERTY (PropParamaters { [self.compiler parsedPropertyParameters:text]; })?
                         PropIdentifier           { [self.compiler parsedPropertyType:text]; }
                         < '*'* > HorizSpace*     { [self.compiler parsedPropertyStars:text]; }
                         PropIdentifier EndOfDecl { [self.compiler parsedPropertyName:text]; }
              / ExtraCode
+			 / Spacing
 
 Definition <- Identifier { [self.compiler startRule:text]; }
                 LEFTARROW Expression { [self.compiler parsedRule]; }
@@ -37,14 +43,20 @@ Suffix     <- Primary ( QUESTION    { [self.compiler parsedQuestion]; }
                       / STAR        { [self.compiler parsedStar]; }
                       / PLUS        { [self.compiler parsedPlus]; }
                       )?
-Primary    <- Identifier !LEFTARROW { [self.compiler parsedIdentifier:text]; }
+Primary    <- Identifier !LEFTARROW { [self.compiler parsedIdentifier:text capturing:NO asserted:NO]; }
+			/ PERCENT Identifier !LEFTARROW	{ [self.compiler parsedIdentifier:text capturing:YES asserted:NO]; }
+			/ AT Identifier !LEFTARROW { [self.compiler parsedIdentifier:text capturing:NO asserted:YES]; }
+			/ AT PERCENT Identifier !LEFTARROW	{ [self.compiler parsedIdentifier:text capturing:YES asserted:YES]; }
             / OPEN Expression CLOSE
-            / Literal   { [self.compiler parsedLiteral:text]; }
+            / Literal      { [self.compiler parsedLiteral:text asserted:NO]; }
+            / AT Literal   { [self.compiler parsedLiteral:text asserted:YES]; }
             / Class     { [self.compiler parsedClass:text]; }
             / DOT       { [self.compiler parsedDot]; }
 
 Effect     <- Code      { [self.compiler parsedCode:text]; }
-            / Action    { [self.compiler parsedAction:text]; }
+			/ Action    { [self.compiler parsedAction:text returnValue:NO]; }
+			/ CIRCUMFLEX Action    { [self.compiler parsedAction:text returnValue:YES]; }
+			/ Fail		{ [self.compiler parsedFail: text]; }
             / BEGIN     { [self.compiler beginCapture]; }
             / END       { [self.compiler endCapture]; }
 
@@ -73,6 +85,9 @@ PLUS       <- '+' Spacing
 OPEN       <- '(' Spacing
 CLOSE      <- ')' Spacing
 DOT        <- '.' Spacing
+CIRCUMFLEX <- '^' 
+PERCENT	   <- '%'
+AT		   <- '@'
 
 Spacing    <- (Space / Comment)*
 Comment    <- '#' (!EndOfLine .)* EndOfLine
@@ -82,16 +97,29 @@ EndOfFile  <- !.
 
 OPTION     <- '@option' HorizSpace+
 PROPERTY   <- '@property' HorizSpace+
+IMPORT	   <- '@import' HorizSpace*
+CLASSDECL		<- '@class' HorizSpace+
+PROTOCOLDECL	<- '@protocol' HorizSpace+
 BEGIN      <- '<' Spacing
 END        <- '>' Spacing
 
 Code       <- '{{' < [^}]* > '}}' Spacing
 Action     <- '{' < [^}]* > '}' Spacing
+Fail	   <- '@!' < [a-zA-Z0-9]+ > Spacing
+					
 HorizSpace <- ' ' / '\t'
 
 # this isn't quite right yet, but it does what I need for the moment
 ExtraCode  <- '%%' < [^%]* > '%%' { [self.compiler parsedExtraCode: text]; }
 
-PropIdentifier <- < IdentStart IdentCont* > HorizSpace*
+ImportIdentifier <- LocalImportIdentifier / GlobalImportIdentifier
+LocalImportIdentifier <- < '\"' ( !'\"' . )+ '\"' >
+GlobalImportIdentifier <- < '<' ( !'>' . )+ '>' >
+					
+PropIdentifier <- < IdentStart IdentCont* ProtocolIdent? > HorizSpace*
 PropParamaters <- < '(' [^)]+ ')' > HorizSpace+
+ProtocolIdent  <- '<' HorizSpace* IdentStart IdentCont* (HorizSpace* ',' HorizSpace* IdentStart IdentCont*)* HorizSpace* '>'
+
+ClassIdentifier <- < IdentStart IdentCont* > HorizSpace*
+					
 EndOfDecl  <- ';' HorizSpace* (EndOfLine / Comment) 

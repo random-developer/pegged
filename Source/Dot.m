@@ -11,12 +11,9 @@
 
 @implementation Dot
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Terminal Methods
-//==================================================================================================
+#pragma mark - Terminal Methods
 
-- (NSString *) condition
+- (NSString *)condition
 {
     return @"[parser matchDot]";
 }

@@ -1,5 +1,8 @@
+@import "Calculator.h";
 
 @option case-insensitive;
+@class Calculator;
+
 @property (retain) Calculator *calculator;
 
 Equation <- Primary EndOfFile

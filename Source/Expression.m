@@ -10,16 +10,18 @@
 
 #import "Compiler.h"
 
+@interface Expression ()
+{
+	NSMutableArray *_nodes;
+}
+
+@end
+
 @implementation Expression
 
-@synthesize nodes = _nodes;
+#pragma mark - Public Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
-
-- (id) init
+- (id)init
 {
     self = [super init];
     
@@ -32,46 +34,32 @@
 }
 
 
-- (void) dealloc
-{
-    [_nodes release];
-    
-    [super dealloc];
-}
+#pragma mark - Node Methods
 
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Node Methods
-//==================================================================================================
-
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName
 {
     NSMutableString *code = [NSMutableString string];
-    
     NSString *selector = self.inverted ? @"invert" : @"matchOne";
     
-    [code appendFormat:@"    if (![parser %@:^(%@ *parser){\n", selector, parserClassName];
-    for (Node *node in self.nodes)
-    {
-        [code appendFormat:@"    if ([parser matchOne:^(%@ *parser){\n", parserClassName];
-        [code appendString:[node compile:parserClassName]];
-        [code appendString:@"    return YES;"];
-        [code appendString:@"    }]) return YES;\n"];
+    [code appendFormat:@"if (![parser %@WithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", selector, parserClassName];
+    
+	for (Node *node in self.nodes) {
+        [code appendFormat:@"\tif ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
+        [code appendString:[[[node compile:parserClassName] stringByAddingIndentationWithCount: 2] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\t\treturn YES;"];
+        [code appendString:@"\n\t}])\n\t\treturn YES;\n\n"];
     }
-    [code appendString:@"    return NO;"];
-    [code appendString:@"    }]) return NO;\n"];
+	
+    [code appendString:@"\treturn NO;\n"];
+    [code appendString:@"}])\n\treturn NO;\n\n"];
     
     return code;
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-- (void) addAlternative:(Node *)node
+- (void)addAlternative:(Node *)node
 {
     [_nodes addObject:node];
 }

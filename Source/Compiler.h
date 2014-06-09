@@ -5,9 +5,6 @@
 //  Created by Matt Diephouse on 12/18/09.
 //  This code is in the public domain.
 //
-
-#import <Foundation/Foundation.h>
-
 @class Rule;
 
 @interface Compiler : NSObject
@@ -17,13 +14,15 @@
     Rule *_startRule;
     Rule *_currentRule;
     
+	NSMutableArray *_imports;
+	NSMutableArray *_classes;
+	NSMutableArray *_protocols;
     NSMutableArray *_properties;
     NSString *_propertyParameters;
     NSString *_propertyStars;
     NSString *_propertyType;
     
     BOOL _caseInsensitive;
-    BOOL _matchDebug;
     
     NSString *_className;
     NSString *_headerPath;
@@ -32,7 +31,6 @@
 }
 
 @property (assign) BOOL caseInsensitive;
-@property (assign) BOOL matchDebug;
 
 @property (copy) NSString *className;
 @property (copy) NSString *headerPath;
@@ -47,13 +45,14 @@
 - (void) beginCapture;
 - (void) endCapture;
 
-- (void) parsedAction:(NSString *)code;
+- (void) parsedAction:(NSString *)code returnValue:(BOOL)returnValue;
 - (void) parsedAlternate;
 - (void) parsedClass:(NSString *)class;
 - (void) parsedCode:(NSString *)code;
 - (void) parsedDot;
-- (void) parsedIdentifier:(NSString *)identifier;
-- (void) parsedLiteral:(NSString *)literal;
+- (void) parsedFail:(NSString *)fail;
+- (void) parsedIdentifier:(NSString *)identifier capturing:(BOOL)capturing asserted:(BOOL)asserted;
+- (void) parsedLiteral:(NSString *)literal asserted:(BOOL)asserted;
 - (void) parsedLookAhead;
 - (void) parsedLookAhead:(NSString *)code;
 - (void) parsedNegativeLookAhead;
@@ -63,6 +62,11 @@
 - (void) parsedRule;
 - (void) parsedStar;
 - (void) startRule:(NSString *)name;
+
+- (void) parsedImport:(NSString *)import;
+
+- (void) parsedClassPrototype:(NSString *)classIdentifier;
+- (void) parsedProtocolPrototype:(NSString *)protocolIdentifier;
 
 - (void) parsedPropertyParameters:(NSString *)parameters;
 - (void) parsedPropertyStars:(NSString *)stars;

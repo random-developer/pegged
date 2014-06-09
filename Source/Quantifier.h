@@ -5,9 +5,6 @@
 //  Created by Matt Diephouse on 1/1/10.
 //  This code is in the public domain.
 //
-
-#import <Foundation/Foundation.h>
-
 #import "Node.h"
 
 @interface Quantifier : Node
@@ -18,7 +15,7 @@
     BOOL _repeats;
 }
 
-@property (retain) Node *node;
+@property (strong) Node *node;
 
 @property (assign) BOOL optional;
 @property (assign) BOOL repeats;
