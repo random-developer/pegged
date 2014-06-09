@@ -1,0 +1,38 @@
+@option language swift;
+@option case-insensitive;
+
+%%
+var calculator: Calculator;
+%%
+
+Equation <- Primary EndOfFile
+
+Primary <- Secondary ( PLUS  Secondary { calculator.add() }
+                     / MINUS Secondary { calculator.subtract() }
+                     )*
+
+Secondary <- Tertiary ( MUL Tertiary { calculator.multiply() }
+                      / DIV Tertiary { calculator.divide()   }
+                      )*
+
+Tertiary <- Terminal EXP Tertiary { calculator.exponent() }
+          / (PLUS / MINUS { calculator.negative() })+ Tertiary
+          / Terminal
+
+Terminal <- OPEN Primary CLOSE
+          / "pow" OPEN Primary COMMA Primary CLOSE { calculator.exponent() }
+          / Number { calculator.pushNumber(text) }
+
+Number <- < [\x30-\x39]+ > _
+
+OPEN      <- '(' _
+CLOSE     <- ')' _
+COMMA     <- ',' _
+
+EXP       <- '**' _
+MUL       <- '*' _
+DIV       <- '/' _
+PLUS      <- '+' _
+MINUS     <- '-' _
+_         <- ' '*
+EndOfFile <- !.

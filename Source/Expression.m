@@ -36,22 +36,36 @@
 
 #pragma mark - Node Methods
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString*)language
 {
     NSMutableString *code = [NSMutableString string];
     NSString *selector = self.inverted ? @"invert" : @"matchOne";
     
-    [code appendFormat:@"if (![parser %@WithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", selector, parserClassName];
-    
-	for (Node *node in self.nodes) {
-        [code appendFormat:@"\tif ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
-        [code appendString:[[[node compile:parserClassName] stringByAddingIndentationWithCount: 2] stringByRemovingTrailingWhitespace]];
-        [code appendString:@"\n\t\treturn YES;"];
-        [code appendString:@"\n\t}])\n\t\treturn YES;\n\n"];
+    if([language isEqualToString: @"swift"]) {
+        [code appendFormat:@"if (!parser.%@WithCaptures(captures: localCaptures, startIndex:startIndex, block:{(parser: %@, startIndex: Int, inout localCaptures: Int) -> () in\n", selector, parserClassName];
+        
+        for (Node *node in self.nodes) {
+            [code appendFormat:@"\tif (parser.matchOneWithCaptures(captures: localCaptures, startIndex:startIndex, block:{(parser: %@, startIndex: Int, localCaptures: Int) -> () in\n", parserClassName];
+            [code appendString:[[[node compile:parserClassName language: language] stringByAddingIndentationWithCount: 2] stringByRemovingTrailingWhitespace]];
+            [code appendString:@"\n\t\treturn true"];
+            [code appendString:@"\n\t}])\n\t\treturn true\n\n"];
+        }
+        
+        [code appendString:@"\treturn false\n"];
+        [code appendString:@"}])\n\treturn false\n\n"];
+    } else {
+        [code appendFormat:@"if (![parser %@WithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", selector, parserClassName];
+        
+        for (Node *node in self.nodes) {
+            [code appendFormat:@"\tif ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
+            [code appendString:[[[node compile:parserClassName language: language] stringByAddingIndentationWithCount: 2] stringByRemovingTrailingWhitespace]];
+            [code appendString:@"\n\t\treturn YES;"];
+            [code appendString:@"\n\t}])\n\t\treturn YES;\n\n"];
+        }
+        
+        [code appendString:@"\treturn NO;\n"];
+        [code appendString:@"}])\n\treturn NO;\n\n"];
     }
-	
-    [code appendString:@"\treturn NO;\n"];
-    [code appendString:@"}])\n\treturn NO;\n\n"];
     
     return code;
 }

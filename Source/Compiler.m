@@ -44,30 +44,15 @@
 		_classes	= [NSMutableArray new];
 		_protocols  = [NSMutableArray new];
         _extraCode  = nil;
+        _language   = @"objc";
     }
     
     return self;
 }
 
+#pragma mark - Compiler workers
 
-#pragma mark - Public Methods
-
-+ (NSString *)unique:(NSString *)identifier
-{
-    static NSUInteger number = 0;
-    return [NSString stringWithFormat:@"%@%lu", identifier, number++];
-}
-
-- (NSMutableString *)getTemplateWithName:(const char *)name
-{
-	size_t length;
-	const void *data = getsectdata ("__DATA", name, &length);
-	
-	NSMutableString *template = [[NSMutableString alloc] initWithBytes:data length:length encoding:NSUTF8StringEncoding];
-	return template;
-}
-
-- (void)compile
+- (void)compile_objc
 {
     NSAssert(self.className != nil,  @"no class name given");
     NSAssert(self.headerPath != nil, @"no path for header file");
@@ -85,28 +70,28 @@
         [synthesizes appendString:[property synthesize]];
         [variables   appendString:[property variable]];
     }
-
-	[imports	 appendString:[_imports componentsJoinedByString: @"\n"]];
-	
+    
+    [imports	 appendString:[_imports componentsJoinedByString: @"\n"]];
+    
     // Generate the header
-	NSMutableString *header = [self getTemplateWithName: "HDRTEMP"];
-
-	[header replaceOccurrencesOfString:@"//!$" withString:@"$" options:0 range:NSMakeRange(0, header.length)];
-	[header replaceOccurrencesOfString:@"ParserClass" withString:self.className options:0 range:NSMakeRange(0, header.length)];
-	[header replaceOccurrencesOfString:@"$Version" withString:[NSString stringWithFormat: @"%lu.%lu.%lu", PEGGED_VERSION_MAJOR, PEGGED_VERSION_MINOR, PEGGED_VERSION_CHANGE] options:0 range:NSMakeRange(0, header.length)];
-
-	if (_classes.count)
-		[header replaceOccurrencesOfString:@"$OtherClasses" withString:[NSString stringWithFormat: @"@class %@;", [_classes componentsJoinedByString: @", "]] options:0 range:NSMakeRange(0, header.length)];
-	else
-		[header replaceOccurrencesOfString:@"$OtherClasses\n" withString:@"" options:0 range:NSMakeRange(0, header.length)];
-		
-	if (_protocols.count)
-		[header replaceOccurrencesOfString:@"$OtherProtocols" withString:[NSString stringWithFormat: @"@protocol %@;", [_protocols componentsJoinedByString: @", "]] options:0 range:NSMakeRange(0, header.length)];
-	else
-		[header replaceOccurrencesOfString:@"$OtherProtocols\n" withString:@"" options:0 range:NSMakeRange(0, header.length)];
-	
-	[header replaceOccurrencesOfString:@"$Properties" withString:properties options:0 range:NSMakeRange(0, header.length)];
-	
+    NSMutableString *header = [self getTemplateWithName: "HDRTEMP"];
+    
+    [header replaceOccurrencesOfString:@"//!$" withString:@"$" options:0 range:NSMakeRange(0, header.length)];
+    [header replaceOccurrencesOfString:@"ParserClass" withString:self.className options:0 range:NSMakeRange(0, header.length)];
+    [header replaceOccurrencesOfString:@"$Version" withString:[NSString stringWithFormat: @"%lu.%lu.%lu", PEGGED_VERSION_MAJOR, PEGGED_VERSION_MINOR, PEGGED_VERSION_CHANGE] options:0 range:NSMakeRange(0, header.length)];
+    
+    if (_classes.count)
+        [header replaceOccurrencesOfString:@"$OtherClasses" withString:[NSString stringWithFormat: @"@class %@;", [_classes componentsJoinedByString: @", "]] options:0 range:NSMakeRange(0, header.length)];
+    else
+        [header replaceOccurrencesOfString:@"$OtherClasses\n" withString:@"" options:0 range:NSMakeRange(0, header.length)];
+    
+    if (_protocols.count)
+        [header replaceOccurrencesOfString:@"$OtherProtocols" withString:[NSString stringWithFormat: @"@protocol %@;", [_protocols componentsJoinedByString: @", "]] options:0 range:NSMakeRange(0, header.length)];
+    else
+        [header replaceOccurrencesOfString:@"$OtherProtocols\n" withString:@"" options:0 range:NSMakeRange(0, header.length)];
+    
+    [header replaceOccurrencesOfString:@"$Properties" withString:properties options:0 range:NSMakeRange(0, header.length)];
+    
     [header writeToFile:self.headerPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
     
     // Generate the source
@@ -115,13 +100,13 @@
     if (self.caseInsensitive) {
         [imports appendString:@"\n#define __PEG_PARSER_CASE_INSENSITIVE__\n"];
     }
-   
+    
     if(self.extraCode) {
         [definitions appendFormat: @"\n\n\
-#pragma mark Extra Code\n\
-\n\
-%@\n\
-\n", self.extraCode];
+         #pragma mark Extra Code\n\
+         \n\
+         %@\n\
+         \n", self.extraCode];
     }
     
     for (NSString *name in [[_rules allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
@@ -137,22 +122,91 @@
         
         [declarations appendFormat:@"\t\t[self addRule:__%@ withName:@\"%@\"];\n", rule.name, rule.name];
         [definitions appendFormat:@"static %@Rule __%@ = ^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", self.className, rule.name, self.className];
-        [definitions appendString:[[[rule compile:self.className] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [definitions appendString:[[[rule compile:self.className language: @"objc"] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
         [definitions appendFormat:@"\n};\n\n"];
     }
     
-	NSMutableString *source = [self getTemplateWithName: "SRCTEMP"];
-
-	[source replaceOccurrencesOfString:@"//!$" withString:@"$" options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"Parser.h" withString:@"ParserClass.h" options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"ParserClass" withString:self.className options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"$Version" withString:[NSString stringWithFormat: @"%lu.%lu.%lu", PEGGED_VERSION_MAJOR, PEGGED_VERSION_MINOR, PEGGED_VERSION_CHANGE] options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"$Imports" withString:imports options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"$ParserDefinitions" withString:[definitions stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"$StartRule" withString:_startRule.name options:0 range:NSMakeRange(0, source.length)];
-	[source replaceOccurrencesOfString:@"$ParserDeclarations" withString:[declarations stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length) ];
-	
+    NSMutableString *source = [self getTemplateWithName: "SRCTEMP"];
+    
+    [source replaceOccurrencesOfString:@"//!$" withString:@"$" options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"Parser.h" withString:@"ParserClass.h" options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"ParserClass" withString:self.className options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$Version" withString:[NSString stringWithFormat: @"%lu.%lu.%lu", PEGGED_VERSION_MAJOR, PEGGED_VERSION_MINOR, PEGGED_VERSION_CHANGE] options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$Imports" withString:imports options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$ParserDefinitions" withString:[definitions stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$StartRule" withString:_startRule.name options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$ParserDeclarations" withString:[declarations stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length) ];
+    
     [source writeToFile:self.sourcePath atomically:NO encoding:NSUTF8StringEncoding error:&error];
+}
+
+- (void) compile_swift {
+    NSError *error = nil;
+    
+    NSAssert(self.className != nil,  @"no class name given");
+    NSAssert(self.sourcePath != nil, @"no path for source file");
+
+    NSMutableString *imports = [NSMutableString new];
+    [_imports enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [imports appendFormat: @"import %@\n", obj];
+    }];
+
+    NSMutableArray *parser_rules = [NSMutableArray arrayWithCapacity: [_rules count]];
+    for (NSString *name in [[_rules allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        Rule *rule = [_rules objectForKey:name];
+        // Check if that the rule has been both used and defined
+        if (rule.defined && !rule.used && rule != _startRule)
+            fprintf(stderr, "rule '%s' defined but not used\n", [rule.name UTF8String]);
+        if (rule.used && !rule.defined)
+        {
+            fprintf(stderr, "rule '%s' used but not defined\n", [rule.name UTF8String]);
+            continue;
+        }
+        
+        [parser_rules addObject: [NSString stringWithFormat: @"\t\"%@\": {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n%@\n}", rule.name, self.className, [[[rule compile:self.className language: @"swift"] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]]];
+    }
+    
+    // Generate the source
+    NSMutableString *source = [self getTemplateWithName: "SWIFTTEMP"];
+    
+    [source replaceOccurrencesOfString:@"//!$" withString:@"$" options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"Parser.h" withString:@"ParserClass.h" options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"ParserClass" withString:self.className options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$Version" withString:[NSString stringWithFormat: @"%lu.%lu.%lu", PEGGED_VERSION_MAJOR, PEGGED_VERSION_MINOR, PEGGED_VERSION_CHANGE] options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$Imports" withString:imports options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$ParserRules" withString:[[parser_rules componentsJoinedByString: @",\n"] stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$StartRule" withString:_startRule.name options:0 range:NSMakeRange(0, source.length)];
+    
+    [source writeToFile:self.sourcePath atomically:NO encoding:NSUTF8StringEncoding error:&error];
+}
+
+#pragma mark - Public Methods
+
++ (NSString *)unique:(NSString *)identifier
+{
+    static NSUInteger number = 0;
+    return [NSString stringWithFormat:@"%@%lu", identifier, number++];
+}
+
+- (NSMutableString *)getTemplateWithName:(const char *)name
+{
+	size_t length;
+	const void *data = getsectdata ("__DATA", name, &length);
+	
+    if(data) {
+        NSMutableString *template = [[NSMutableString alloc] initWithBytes:data length:length encoding:NSUTF8StringEncoding];
+        return template;
+    }
+    
+    @throw [NSException exceptionWithName: @"CRASH" reason: [NSString stringWithFormat: @"Unknown template: %s", name] userInfo: nil];
+}
+
+- (void) compile {
+    if([self.language isEqualToString: @"swift"]) {
+        [self compile_swift];
+    } else {
+        [self compile_objc];
+    }
 }
 
 
@@ -180,13 +234,21 @@
 
 - (void)beginCapture
 {
-    [_stack addObject:[Code codeWithString:@"[parser beginCapture]"]];
+    if([_language isEqualToString: @"swift"]) {
+        [_stack addObject:[Code codeWithString:@"parser.beginCapture()"]];
+    } else {
+        [_stack addObject:[Code codeWithString:@"[parser beginCapture]"]];
+    }
 }
 
 
 - (void)endCapture
 {
-    [_stack addObject:[Code codeWithString:@"[parser endCapture]"]];
+    if([_language isEqualToString: @"swift"]) {
+        [_stack addObject:[Code codeWithString:@"parser.endCapture()"]];
+    } else {
+        [_stack addObject:[Code codeWithString:@"[parser endCapture]"]];
+    }
 }
 
 
@@ -366,7 +428,11 @@
 
 - (void)parsedImport:(NSString *)import
 {
-	[_imports addObject: [NSString stringWithFormat:@"#import %@", import]];
+    if([self.language isEqualToString: @"swift"]) {
+        [_imports addObject: import];
+    } else {
+        [_imports addObject: [NSString stringWithFormat:@"#import %@", import]];
+    }
 }
 
 - (void)parsedClassPrototype:(NSString *)classIdentifier

@@ -18,7 +18,7 @@
 }
 
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString*)language
 {
     return nil;
 }

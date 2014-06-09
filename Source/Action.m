@@ -20,18 +20,28 @@
 
 #pragma mark - Node Methods
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString *)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendFormat:@"[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(%@ *self, NSString *text, NSString **errorCode) {\n", parserClassName];
-    [code appendString:[[_code stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
-	if (!_hasReturnValue)
-		[code appendString: @"\n\n\treturn nil;\n"];
-	else
-		[code appendString: @"\n"];
-    [code appendString:@"}];\n"];
-    	
+    if([language isEqualToString: @"swift"]) {
+        [code appendString:@"parser.performActionUsingCaptures(captures: localCaptures, startIndex:startIndex, block: {(text: string, inout errorCode:string) -> AnyType in\n"];
+        [code appendString:[[_code stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        if (!_hasReturnValue)
+            [code appendString: @"\n\n\treturn nil\n"];
+        else
+            [code appendString: @"\n"];
+        [code appendString:@"})\n"];
+    } else {
+        [code appendFormat:@"[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(%@ *self, NSString *text, NSString **errorCode) {\n", parserClassName];
+        [code appendString:[[_code stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        if (!_hasReturnValue)
+            [code appendString: @"\n\n\treturn nil;\n"];
+        else
+            [code appendString: @"\n"];
+        [code appendString:@"}];\n"];
+    }
+    
     return code;
 }
 

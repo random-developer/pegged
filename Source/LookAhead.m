@@ -14,14 +14,20 @@
 
 #pragma mark - Node Methods
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString *)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendFormat:@"if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
-    [code appendString:[[[self.node compile:parserClassName] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
-    [code appendString:@"\n\n\treturn YES;\n"];
-    [code appendString:@"}])\n\treturn NO;\n"];
+    if([language isEqualToString: @"swift"]) {
+        [code appendFormat: @"return !parser.lookAheadWithCaptures(captures: localCaptures, startIndex: startIndex, block: {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n", parserClassName];
+        [code appendString: [[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString: @"})"];
+    } else {
+        [code appendFormat: @"if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
+        [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\n\treturn YES;\n"];
+        [code appendString:@"}])\n\treturn NO;\n"];
+    }
     
     return code;
 }

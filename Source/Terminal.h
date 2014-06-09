@@ -9,8 +9,8 @@
 
 @interface Terminal : Node
 
-- (NSString *) condition;
+- (NSString *) condition:(NSString*)language;
 
-- (NSString *) compileIfAccepted;
+- (NSString *) compileIfAccepted:(NSString*)language;
 
 @end

@@ -86,8 +86,12 @@ int main (int argc, char *argv[])
         if (!outputDir)
             outputDir = [fileWithoutExtension stringByDeletingLastPathComponent];
         outputDir = [outputDir stringByAppendingPathComponent:compiler.className];
-        compiler.headerPath = [outputDir stringByAppendingPathExtension:@"h"];
-        compiler.sourcePath = [outputDir stringByAppendingPathExtension:@"m"];
+        if([compiler.language isEqualToString: @"swift"]) {
+            compiler.sourcePath = [outputDir stringByAppendingPathExtension:@"swift"];
+        } else {
+            compiler.headerPath = [outputDir stringByAppendingPathExtension:@"h"];
+            compiler.sourcePath = [outputDir stringByAppendingPathExtension:@"m"];
+        }
         [compiler compile];
     }
     else

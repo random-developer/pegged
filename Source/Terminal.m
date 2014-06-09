@@ -14,28 +14,38 @@
 
 #pragma mark - Public Methods
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString *)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendFormat:@"if (%@%@)\n\treturn NO;\n",
-     self.inverted ? @"" : @"!", [self condition]];
+    if([language isEqualToString: @"swift"]) {
+        [code appendFormat:@"if (%@%@) {\n\treturn false\n}\n",
+         self.inverted ? @"" : @"!", [self condition: language]];
+        
+        NSString *acceptanceCode = [self compileIfAccepted: language];
+        
+        if (acceptanceCode)
+            [code appendFormat: @"else {\n\t%@ }\n", [self compileIfAccepted: language]];
+    } else {
+        [code appendFormat:@"if (%@%@)\n\treturn NO;\n",
+         self.inverted ? @"" : @"!", [self condition: language]];
+        
+        NSString *acceptanceCode = [self compileIfAccepted: language];
+        
+        if (acceptanceCode)
+            [code appendFormat: @"else\n\t%@\n", [self compileIfAccepted: language]];
+    }
     
-	NSString *acceptanceCode = self.compileIfAccepted;
-	
-	if (acceptanceCode)
-		[code appendFormat: @"else\n\t%@\n", self.compileIfAccepted];
-	
     return code;
 }
 
 
-- (NSString *)condition
+- (NSString *)condition:(NSString*)language
 {
     return nil;
 }
 
-- (NSString *)compileIfAccepted
+- (NSString *)compileIfAccepted:(NSString*)language
 {
 	return nil;
 }

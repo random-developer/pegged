@@ -13,15 +13,23 @@
 
 #pragma mark - Terminal Methods
 
-- (NSString *)condition
+- (NSString *)condition:(NSString*)language
 {
-    return [NSString stringWithFormat:@"[parser matchRule: @\"%@\" startIndex:startIndex asserted:%@]", self.rule.name, _asserted ? @"YES" : @"NO"];
+    if([language isEqualToString: @"swift"]) {
+        return [NSString stringWithFormat:@"parser.matchRule(rule: \"%@\", startIndex:startIndex, asserted: %@)", self.rule.name, _asserted ? @"true" : @"false"];
+    } else {
+        return [NSString stringWithFormat:@"[parser matchRule: @\"%@\" startIndex:startIndex asserted:%@]", self.rule.name, _asserted ? @"YES" : @"NO"];
+    }
 }
 
-- (NSString *)compileIfAccepted
+- (NSString *)compileIfAccepted:(NSString*)language
 {
 	if (_capturing)
-		return [NSString stringWithFormat:@"*localCaptures += 1;\n"];
+        if([language isEqualToString: @"swift"]) {
+            return @"localCaptures = localCaptures + 1\n";
+        } else {
+            return @"*localCaptures += 1;\n";
+        }
 	else
 		return nil;
 }

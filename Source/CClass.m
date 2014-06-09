@@ -92,7 +92,7 @@ static void setbits(unsigned char bitset[], const char *cstring, BOOL caseInsens
 
 #pragma mark - Terminal Methods
 
-- (NSString *)condition
+- (NSString *)condition:(NSString*)language
 {
     if (!_repr)
     {
@@ -107,10 +107,15 @@ static void setbits(unsigned char bitset[], const char *cstring, BOOL caseInsens
         char string[256];
         char *ptr = string;
         for (int c=0;  c < 32;  ++c)
-            ptr += sprintf(ptr, "\\%03o", bitset[c]);
+            ptr += sprintf(ptr, "\\x%02x", bitset[c]);
         _repr = [NSString stringWithUTF8String:string];
     }
-    return [NSString stringWithFormat:@"[parser matchClass: (unsigned char *)\"%@\"]", _repr];
+    
+    if([language isEqualToString: @"swift"]) {
+        return [NSString stringWithFormat:@"parser.matchClass(\"%@\")", _repr];
+    } else {
+        return [NSString stringWithFormat:@"[parser matchClass: (unsigned char *)\"%@\"]", _repr];
+    }
 }
 
 

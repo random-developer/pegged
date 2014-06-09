@@ -12,7 +12,7 @@
 
 #pragma mark - Terminal Methods
 
-- (NSString *)condition
+- (NSString *)condition:(NSString*) language
 {
     return [NSString stringWithFormat:@"(%@)", _expression];
 }

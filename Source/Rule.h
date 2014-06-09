@@ -18,6 +18,6 @@
 + (id) ruleWithName:(NSString*)name;
 - (id) initWithName:(NSString*)name;
 
-- (NSString *) compile:(NSString *)parserClassName;
+- (NSString *) compile:(NSString *)parserClassName language:(NSString*)language;
 
 @end

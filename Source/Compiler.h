@@ -36,6 +36,7 @@
 @property (copy) NSString *headerPath;
 @property (copy) NSString *sourcePath;
 @property (copy) NSString *extraCode;
+@property (copy) NSString *language;
 
 + (NSString *) unique:(NSString *)identifier;
 

@@ -34,12 +34,16 @@
 }
 
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString*)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendString: [[self.definition compile:parserClassName] stringByRemovingTrailingWhitespace]];
-    [code appendString: @"\n\nreturn YES;\n"];
+    [code appendString: [[self.definition compile:parserClassName language: language] stringByRemovingTrailingWhitespace]];
+    if([language isEqualToString: @"swift"]) {
+        [code appendString: @"\n\nreturn true\n"];
+    } else {
+        [code appendString: @"\n\nreturn YES;\n"];
+    }
     
     return code;
 }

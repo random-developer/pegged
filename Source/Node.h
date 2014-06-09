@@ -12,7 +12,7 @@
 
 + (id) node;
 
-- (NSString *) compile:(NSString *)parserClassName;
+- (NSString *) compile:(NSString *)parserClassName language:(NSString*)language;
 - (void) invert;
 
 @end

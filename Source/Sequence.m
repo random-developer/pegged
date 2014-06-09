@@ -35,23 +35,37 @@
 
 #pragma mark - Node Methods
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString*)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    if (self.inverted)
-        [code appendFormat:@"return [parser invertWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
-    
-    for (Node *node in self.nodes) {
-        [code appendString:[[[node compile:parserClassName] stringByAddingIndentationWithCount: (self.inverted ? 1 : 0)] stringByRemovingTrailingWhitespace]];
-		[code appendString: @"\n\n"];
-	}
-    
-    if (self.inverted) {
-        [code appendString:@"\treturn YES;\n"];
-        [code appendString:@"}];\n"];
+    if([language isEqualToString: @"swift"]) {
+        if (self.inverted)
+            [code appendFormat:@"return parser.invertWithCaptures(captures: localCaptures, startIndex:startIndex, block:{(parser: %@, startIndex: Int, localCaptures: Int) -> () in \n", parserClassName];
+        
+        for (Node *node in self.nodes) {
+            [code appendString:[[[node compile:parserClassName language: language] stringByAddingIndentationWithCount: (self.inverted ? 1 : 0)] stringByRemovingTrailingWhitespace]];
+            [code appendString: @"\n\n"];
+        }
+        
+        if (self.inverted) {
+            [code appendString:@"\treturn true\n"];
+            [code appendString:@"})\n"];
+        }
+    } else {
+        if (self.inverted)
+            [code appendFormat:@"return [parser invertWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
+        
+        for (Node *node in self.nodes) {
+            [code appendString:[[[node compile:parserClassName language: language] stringByAddingIndentationWithCount: (self.inverted ? 1 : 0)] stringByRemovingTrailingWhitespace]];
+            [code appendString: @"\n\n"];
+        }
+        
+        if (self.inverted) {
+            [code appendString:@"\treturn YES;\n"];
+            [code appendString:@"}];\n"];
+        }
     }
-    
     return code;
 }
 

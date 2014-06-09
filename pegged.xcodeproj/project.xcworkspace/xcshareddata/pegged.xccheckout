@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>F0E1EF28-22D1-428D-83BC-77F566F8E23B</string>
+	<string>A9A52FEC-CC66-449F-AE5A-6F20F32F4475</string>
 	<key>IDESourceControlProjectName</key>
 	<string>pegged</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>457111A4-F7E2-4EA8-80EB-477B292A6090</key>
-		<string>https://github.com/hydrixos/pegged.git</string>
+		<key>0390C694-06B5-4BD4-B31A-B2F509745A42</key>
+		<string>ssh://github.com/dparnell/pegged.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>pegged.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>457111A4-F7E2-4EA8-80EB-477B292A6090</key>
+		<key>0390C694-06B5-4BD4-B31A-B2F509745A42</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/hydrixos/pegged.git</string>
+	<string>ssh://github.com/dparnell/pegged.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>457111A4-F7E2-4EA8-80EB-477B292A6090</string>
+	<string>0390C694-06B5-4BD4-B31A-B2F509745A42</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>457111A4-F7E2-4EA8-80EB-477B292A6090</string>
+			<string>0390C694-06B5-4BD4-B31A-B2F509745A42</string>
 			<key>IDESourceControlWCCName</key>
 			<string>pegged</string>
 		</dict>

@@ -12,7 +12,7 @@
 
 #pragma mark - Node Methods
 
-- (NSString *)compile:(NSString *)failLabel
+- (NSString *)compile:(NSString *)failLabel language:(NSString *)language
 {
     return [NSString stringWithFormat:@"%@;\n", self.code];
 }

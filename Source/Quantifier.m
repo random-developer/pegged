@@ -14,27 +14,46 @@
 
 #pragma mark - Node Methods
 
-- (NSString *)compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString *)language
 {
     NSMutableString *code = [NSMutableString string];
     
     NSString *selector = self.repeats ? @"matchMany" : @"matchOne";
     
-    if (!self.optional)
-		[code appendString:@"if (!"];
-    
-    [code appendFormat:@"[parser %@WithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", selector, parserClassName];
-    [code appendString:[[[self.node compile:parserClassName] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
-    [code appendString:@"\n\treturn YES;\n"];
-    [code appendString:@"}]"];
-    
-    if (self.optional)
-    {
-        [code appendFormat:@";\n"];
-    }
-    else
-    {
-        [code appendFormat:@")\n\treturn NO;\n"];
+    if([language isEqualToString: @"swift"]) {
+        if (!self.optional)
+            [code appendString:@"if (!"];
+        
+        [code appendFormat:@"parser.%@WithCaptures(captures: localCaptures, startIndex:startIndex, block: {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n", selector, parserClassName];
+        [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\treturn true\n"];
+        [code appendString:@"})\n"];
+        
+        if (self.optional)
+        {
+            [code appendFormat:@"\n"];
+        }
+        else
+        {
+            [code appendFormat:@")\n\treturn false\n"];
+        }
+    } else {
+        if (!self.optional)
+            [code appendString:@"if (!"];
+        
+        [code appendFormat:@"[parser %@WithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", selector, parserClassName];
+        [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\treturn YES;\n"];
+        [code appendString:@"}]"];
+        
+        if (self.optional)
+        {
+            [code appendFormat:@";\n"];
+        }
+        else
+        {
+            [code appendFormat:@")\n\treturn NO;\n"];
+        }
     }
     
     return code;

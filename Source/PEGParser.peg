@@ -18,6 +18,7 @@
 Grammar <- Spacing Declaration* Spacing Definition+ EndOfFile
 
 Declaration <- OPTION "case-insensitive" HorizSpace* EndOfDecl { self.compiler.caseInsensitive = YES; }
+             / OPTION "language" HorizSpace* Language EndOfDecl { self.compiler.language = text; }
 			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl { [self.compiler parsedImport:text]; }
 			 / CLASSDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedClassPrototype: text]; }
 			 / PROTOCOLDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedProtocolPrototype: text]; }
@@ -112,14 +113,17 @@ HorizSpace <- ' ' / '\t'
 # this isn't quite right yet, but it does what I need for the moment
 ExtraCode  <- '%%' < [^%]* > '%%' { [self.compiler parsedExtraCode: text]; }
 
-ImportIdentifier <- LocalImportIdentifier / GlobalImportIdentifier
+ImportIdentifier <- LocalImportIdentifier / GlobalImportIdentifier / SwiftImportIdentifier
 LocalImportIdentifier <- < '\"' ( !'\"' . )+ '\"' >
 GlobalImportIdentifier <- < '<' ( !'>' . )+ '>' >
-					
+SwiftImportIdentifier <- < (!';' .)+ >
+
 PropIdentifier <- < IdentStart IdentCont* ProtocolIdent? > HorizSpace*
 PropParamaters <- < '(' [^)]+ ')' > HorizSpace+
 ProtocolIdent  <- '<' HorizSpace* IdentStart IdentCont* (HorizSpace* ',' HorizSpace* IdentStart IdentCont*)* HorizSpace* '>'
 
 ClassIdentifier <- < IdentStart IdentCont* > HorizSpace*
-					
+		
+Language <- < "objc" / "swift" > HorizSpace*
+                    
 EndOfDecl  <- ';' HorizSpace* (EndOfLine / Comment) 
