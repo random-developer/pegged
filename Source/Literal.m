@@ -17,7 +17,7 @@
 {
     NSString *string = self.caseInsensitive ? [self.string lowercaseString] : self.string;
     if([language isEqualToString: @"swift"]) {
-        return [NSString stringWithFormat:@"parser.matchString(literal: \"%@\", startIndex: startIndex, asserted: %@)", string, _asserted ? @"true" : @"false"];
+        return [NSString stringWithFormat:@"parser.matchString(\"%@\", startIndex: startIndex, asserted: %@)", string, _asserted ? @"true" : @"false"];
     } else {
         return [NSString stringWithFormat:@"[parser matchString:\"%@\" startIndex:startIndex asserted:%@]", string, _asserted ? @"YES" : @"NO"];
     }

@@ -41,7 +41,7 @@
     
     if([language isEqualToString: @"swift"]) {
         if (self.inverted)
-            [code appendFormat:@"return parser.invertWithCaptures(captures: localCaptures, startIndex:startIndex, block:{(parser: %@, startIndex: Int, localCaptures: Int) -> () in \n", parserClassName];
+            [code appendFormat:@"return parser.invertWithCaptures(captures: localCaptures, startIndex:startIndex, block:{(parser: %@, startIndex: Int, localCaptures: Int) -> Bool in \n", parserClassName];
         
         for (Node *node in self.nodes) {
             [code appendString:[[[node compile:parserClassName language: language] stringByAddingIndentationWithCount: (self.inverted ? 1 : 0)] stringByRemovingTrailingWhitespace]];

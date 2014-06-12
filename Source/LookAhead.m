@@ -19,9 +19,10 @@
     NSMutableString *code = [NSMutableString string];
     
     if([language isEqualToString: @"swift"]) {
-        [code appendFormat: @"return !parser.lookAheadWithCaptures(captures: localCaptures, startIndex: startIndex, block: {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n", parserClassName];
+        [code appendFormat: @"if( !parser.lookAheadWithCaptures(&localCaptures, startIndex: startIndex, block: {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n", parserClassName];
         [code appendString: [[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
-        [code appendString: @"})"];
+        [code appendString: @"\n\n\treturn true"];
+        [code appendString: @"})) {\n\treturn false\n}"];
     } else {
         [code appendFormat: @"if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
         [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];

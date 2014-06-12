@@ -1,27 +1,31 @@
 @option language swift;
 @option case-insensitive;
 
+# NOTE: For some reason I am unable to use the normal route of a build rule to handle *.peg files.
+#       The derived *.swift file is created, but it refuses to find the Calculator class.
+#       Hopefully this is just a bug in the XCode 6.0 Beta
+
 %%
-var calculator: Calculator;
+var calculator: Calculator = Calculator()
 %%
 
 Equation <- Primary EndOfFile
 
-Primary <- Secondary ( PLUS  Secondary { calculator.add() }
-                     / MINUS Secondary { calculator.subtract() }
+Primary <- Secondary ( PLUS  Secondary { parser.calculator.add() }
+                     / MINUS Secondary { parser.calculator.subtract() }
                      )*
 
-Secondary <- Tertiary ( MUL Tertiary { calculator.multiply() }
-                      / DIV Tertiary { calculator.divide()   }
+Secondary <- Tertiary ( MUL Tertiary { parser.calculator.multiply() }
+                      / DIV Tertiary { parser.calculator.divide()   }
                       )*
 
-Tertiary <- Terminal EXP Tertiary { calculator.exponent() }
-          / (PLUS / MINUS { calculator.negative() })+ Tertiary
+Tertiary <- Terminal EXP Tertiary { parser.calculator.exponent() }
+          / (PLUS / MINUS { parser.calculator.negative() })+ Tertiary
           / Terminal
 
 Terminal <- OPEN Primary CLOSE
-          / "pow" OPEN Primary COMMA Primary CLOSE { calculator.exponent() }
-          / Number { calculator.pushNumber(text) }
+          / "pow" OPEN Primary COMMA Primary CLOSE { parser.calculator.exponent() }
+          / Number { parser.calculator.pushNumber(text) }
 
 Number <- < [\x30-\x39]+ > _
 

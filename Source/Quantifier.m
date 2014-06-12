@@ -24,7 +24,7 @@
         if (!self.optional)
             [code appendString:@"if (!"];
         
-        [code appendFormat:@"parser.%@WithCaptures(captures: localCaptures, startIndex:startIndex, block: {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n", selector, parserClassName];
+        [code appendFormat:@"parser.%@WithCaptures(&localCaptures, startIndex:startIndex, block: {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n", selector, parserClassName];
         [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
         [code appendString:@"\n\treturn true\n"];
         [code appendString:@"})\n"];
@@ -35,7 +35,7 @@
         }
         else
         {
-            [code appendFormat:@")\n\treturn false\n"];
+            [code appendFormat:@") {\n\treturn false\n}\n"];
         }
     } else {
         if (!self.optional)

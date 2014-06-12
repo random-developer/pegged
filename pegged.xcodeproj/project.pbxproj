@@ -22,8 +22,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		650F37D21949B010002FFED6 /* CalculatorParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650F37D11949AFDB002FFED6 /* CalculatorParser.swift */; };
+		650F37D31949B0A0002FFED6 /* CalculatorParser.peg in Resources */ = {isa = PBXBuildFile; fileRef = 657E3A101945A27B00B3EC52 /* CalculatorParser.peg */; };
+		65526112194931D700F8AE5D /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65526111194931D700F8AE5D /* Calculator.swift */; };
 		657E3A0C1945A23500B3EC52 /* SwiftCalculatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657E3A0B1945A23500B3EC52 /* SwiftCalculatorTest.swift */; };
-		657E3A111945A27B00B3EC52 /* CalculatorParser.peg in Resources */ = {isa = PBXBuildFile; fileRef = 657E3A101945A27B00B3EC52 /* CalculatorParser.peg */; };
 		79880669177C7AF60003B729 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		79880676177C7B1B0003B729 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 79880674177C7B1B0003B729 /* main.m */; };
 		79880677177C7F3C0003B729 /* ASTParser.peg in Sources */ = {isa = PBXBuildFile; fileRef = 79880670177C7B1B0003B729 /* ASTParser.peg */; };
@@ -62,17 +64,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
-		657E3A121945A3CB00B3EC52 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.peg";
-			fileType = pattern.proxy;
-			isEditable = 1;
-			outputFiles = (
-				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).swift",
-			);
-			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"";
-		};
 		7988066B177C7AF60003B729 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -112,7 +103,21 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
+		650F37DF1949B2FE002FFED6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 650F37DB1949B261002FFED6;
+			remoteInfo = SwiftCalculatorPegRun;
+		};
 		657E3A131945A41800B3EC52 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
+			remoteInfo = pegged;
+		};
+		658E5A261949B379001CAE80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
@@ -160,6 +165,8 @@
 		08FB7796FE84155DC02AAC07 /* pegged.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pegged.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* pegged_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pegged_Prefix.pch; sourceTree = "<group>"; };
+		650F37D11949AFDB002FFED6 /* CalculatorParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorParser.swift; sourceTree = "<group>"; };
+		65526111194931D700F8AE5D /* Calculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 		657E3A011945440800B3EC52 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		657E3A071945A23500B3EC52 /* SwiftCalculatorTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftCalculatorTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		657E3A0A1945A23500B3EC52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -358,6 +365,8 @@
 		657E3A081945A23500B3EC52 /* SwiftCalculatorTest */ = {
 			isa = PBXGroup;
 			children = (
+				65526111194931D700F8AE5D /* Calculator.swift */,
+				650F37D11949AFDB002FFED6 /* CalculatorParser.swift */,
 				657E3A101945A27B00B3EC52 /* CalculatorParser.peg */,
 				657E3A0B1945A23500B3EC52 /* SwiftCalculatorTest.swift */,
 				657E3A091945A23500B3EC52 /* Supporting Files */,
@@ -440,6 +449,24 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXLegacyTarget section */
+		650F37DB1949B261002FFED6 /* SwiftCalculatorPegRun */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "--output-dir \"$SOURCE_ROOT/SwiftCalculatorTest\" \"$SOURCE_ROOT/SwiftCalculatorTest/CalculatorParser.peg\"";
+			buildConfigurationList = 650F37DC1949B261002FFED6 /* Build configuration list for PBXLegacyTarget "SwiftCalculatorPegRun" */;
+			buildPhases = (
+			);
+			buildToolPath = "${BUILT_PRODUCTS_DIR}/pegged";
+			buildWorkingDirectory = "";
+			dependencies = (
+				658E5A271949B379001CAE80 /* PBXTargetDependency */,
+			);
+			name = SwiftCalculatorPegRun;
+			passBuildSettingsInEnvironment = 1;
+			productName = SwiftCalculatorPegRun;
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		657E3A061945A23500B3EC52 /* SwiftCalculatorTest */ = {
 			isa = PBXNativeTarget;
@@ -450,10 +477,10 @@
 				657E3A051945A23500B3EC52 /* Resources */,
 			);
 			buildRules = (
-				657E3A121945A3CB00B3EC52 /* PBXBuildRule */,
 			);
 			dependencies = (
 				657E3A141945A41800B3EC52 /* PBXTargetDependency */,
+				650F37E01949B2FE002FFED6 /* PBXTargetDependency */,
 			);
 			name = SwiftCalculatorTest;
 			productName = SwiftCalculatorTest;
@@ -541,8 +568,11 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
 				TargetAttributes = {
+					650F37DB1949B261002FFED6 = {
+						CreatedOnToolsVersion = 6.0;
+					};
 					657E3A061945A23500B3EC52 = {
 						CreatedOnToolsVersion = 6.0;
 					};
@@ -564,6 +594,7 @@
 				79880661177C7AF60003B729 /* AST */,
 				BE94312C10F8315100FA4E0A /* EvenStrings */,
 				BEDCA80A10F149B6003C0737 /* Tests */,
+				650F37DB1949B261002FFED6 /* SwiftCalculatorPegRun */,
 				657E3A061945A23500B3EC52 /* SwiftCalculatorTest */,
 			);
 		};
@@ -574,7 +605,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				657E3A111945A27B00B3EC52 /* CalculatorParser.peg in Resources */,
+				650F37D31949B0A0002FFED6 /* CalculatorParser.peg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,6 +671,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65526112194931D700F8AE5D /* Calculator.swift in Sources */,
+				650F37D21949B010002FFED6 /* CalculatorParser.swift in Sources */,
 				657E3A0C1945A23500B3EC52 /* SwiftCalculatorTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -706,10 +739,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		650F37E01949B2FE002FFED6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 650F37DB1949B261002FFED6 /* SwiftCalculatorPegRun */;
+			targetProxy = 650F37DF1949B2FE002FFED6 /* PBXContainerItemProxy */;
+		};
 		657E3A141945A41800B3EC52 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DD76F960486AA7600D96B5E /* pegged */;
 			targetProxy = 657E3A131945A41800B3EC52 /* PBXContainerItemProxy */;
+		};
+		658E5A271949B379001CAE80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* pegged */;
+			targetProxy = 658E5A261949B379001CAE80 /* PBXContainerItemProxy */;
 		};
 		79880662177C7AF60003B729 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -824,6 +867,81 @@
 			};
 			name = Release;
 		};
+		650F37DD1949B261002FFED6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		650F37DE1949B261002FFED6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		657E3A0E1945A23500B3EC52 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -841,6 +959,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -884,6 +1003,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1044,6 +1164,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		650F37DC1949B261002FFED6 /* Build configuration list for PBXLegacyTarget "SwiftCalculatorPegRun" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				650F37DD1949B261002FFED6 /* Debug */,
+				650F37DE1949B261002FFED6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		657E3A0D1945A23500B3EC52 /* Build configuration list for PBXNativeTarget "SwiftCalculatorTest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1051,6 +1180,7 @@
 				657E3A0F1945A23500B3EC52 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7988066C177C7AF60003B729 /* Build configuration list for PBXNativeTarget "AST" */ = {
 			isa = XCConfigurationList;

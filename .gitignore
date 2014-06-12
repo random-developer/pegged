@@ -3,3 +3,5 @@ build/
 *.xcodeproj/*.pbxuser
 .DS_Store
 xcuserdata
+
+/SwiftCalculatorTest/CalculatorParser.swift

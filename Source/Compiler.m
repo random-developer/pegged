@@ -170,12 +170,18 @@
     NSMutableString *source = [self getTemplateWithName: "SWIFTTEMP"];
     
     [source replaceOccurrencesOfString:@"//!$" withString:@"$" options:0 range:NSMakeRange(0, source.length)];
-    [source replaceOccurrencesOfString:@"Parser.h" withString:@"ParserClass.h" options:0 range:NSMakeRange(0, source.length)];
     [source replaceOccurrencesOfString:@"ParserClass" withString:self.className options:0 range:NSMakeRange(0, source.length)];
     [source replaceOccurrencesOfString:@"$Version" withString:[NSString stringWithFormat: @"%lu.%lu.%lu", PEGGED_VERSION_MAJOR, PEGGED_VERSION_MINOR, PEGGED_VERSION_CHANGE] options:0 range:NSMakeRange(0, source.length)];
+    if (self.caseInsensitive) {
+        [source replaceOccurrencesOfString: @"$ParserCaseSensitivity" withString: @".lowercaseString" options:0 range: NSMakeRange(0, source.length)];
+    } else {
+        [source replaceOccurrencesOfString: @"$ParserCaseSensitivity" withString: @"" options:0 range: NSMakeRange(0, source.length)];
+    }
+
     [source replaceOccurrencesOfString:@"$Imports" withString:imports options:0 range:NSMakeRange(0, source.length)];
     [source replaceOccurrencesOfString:@"$ParserRules" withString:[[parser_rules componentsJoinedByString: @",\n"] stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length)];
     [source replaceOccurrencesOfString:@"$StartRule" withString:_startRule.name options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$ExtraCode" withString: [_extraCode stringByAddingIndentationWithCount: 1] options:0 range:NSMakeRange(0, source.length)];
     
     [source writeToFile:self.sourcePath atomically:NO encoding:NSUTF8StringEncoding error:&error];
 }

@@ -16,7 +16,7 @@
 - (NSString *)condition:(NSString*)language
 {
     if([language isEqualToString: @"swift"]) {
-        return [NSString stringWithFormat:@"parser.matchRule(rule: \"%@\", startIndex:startIndex, asserted: %@)", self.rule.name, _asserted ? @"true" : @"false"];
+        return [NSString stringWithFormat:@"parser.matchRule(\"%@\", startIndex:startIndex, asserted: %@)", self.rule.name, _asserted ? @"true" : @"false"];
     } else {
         return [NSString stringWithFormat:@"[parser matchRule: @\"%@\" startIndex:startIndex asserted:%@]", self.rule.name, _asserted ? @"YES" : @"NO"];
     }

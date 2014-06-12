@@ -112,7 +112,7 @@ static void setbits(unsigned char bitset[], const char *cstring, BOOL caseInsens
     }
     
     if([language isEqualToString: @"swift"]) {
-        return [NSString stringWithFormat:@"parser.matchClass(\"%@\")", _repr];
+        return [NSString stringWithFormat:@"parser.matchClass([%@])", [[_repr stringByReplacingOccurrencesOfString: @"\\" withString: @",0"] substringFromIndex: 1]];
     } else {
         return [NSString stringWithFormat:@"[parser matchClass: (unsigned char *)\"%@\"]", _repr];
     }
