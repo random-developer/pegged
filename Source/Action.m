@@ -25,7 +25,7 @@
     NSMutableString *code = [NSMutableString string];
     
     if([language isEqualToString: @"swift"]) {
-        [code appendFormat:@"parser.performActionUsingCaptures(localCaptures, startIndex:startIndex, block: {(parser: %@, text: String, inout errorCode: String) -> AnyObject? in\n", parserClassName];
+        [code appendFormat:@"parser.performActionUsingCaptures(localCaptures, startIndex:startIndex, block: {(parser: %@, text: String) -> AnyObject? in\n", parserClassName];
         [code appendString:[[_code stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
         if (!_hasReturnValue)
             [code appendString: @"\n\n\treturn nil\n"];

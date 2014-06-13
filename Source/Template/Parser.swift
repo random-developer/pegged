@@ -12,6 +12,9 @@ let ParserClassErrorStringLengthKey   = "ParserClassErrorStringLength"
 let ParserClassErrorStringKey         = "ParserClassErrorString"
 let ParserClassErrorTypeKey           = "ParserClassErrorType"
 
+typealias ParserClassRule = (parser: ParserClass, startIndex: Int, inout localCaptures: Int) -> Bool
+typealias ParserClassAction = (parser: ParserClass, text: String) -> AnyObject?
+
 class ParserClassCapture {
     // The position index used for text capturing
     var begin: Int = 0
@@ -21,7 +24,7 @@ class ParserClassCapture {
     var parsedRange: Range<Int> = Range<Int>(start: 0, end: 0)
 
     // The action associated with a capture
-    var action: (parser: ParserClass, text: String, inout errorCode: String) -> AnyObject?
+    var action: ParserClassAction
 
     // The count of captured results available to an action
     var capturedResultsCount: Int = 0
@@ -32,12 +35,8 @@ class ParserClassCapture {
     // The index of the next result to be read by the action
     var nextResultIndex: Int = 0
     
-    init() {
-        // let's keep the compiler happy!
-
-        action = {(parser: ParserClass, text: String, inout errorCode: String) -> AnyObject? in
-            return nil
-        }
+    init(action: ParserClassAction) {
+        self.action = action
     }
 }
 
@@ -73,6 +72,8 @@ class ParserClass {
     var _currentCapture: ParserClassCapture?
     
     var _actionResults: AnyObject[] = []
+    
+    var errorCode = ""
     
 //!$ExtraCode
 
@@ -129,9 +130,9 @@ class ParserClass {
                     _actionResults.replaceRange(resultsRange, with: [])
                 }
                 
-                var errorCode = ""
+                errorCode = ""
                 
-                let result : AnyObject? = capture.action(parser: self, text: self.yyText(capture.begin, to:capture.end), errorCode: &errorCode)
+                let result : AnyObject? = capture.action(parser: self, text: self.yyText(capture.begin, to:capture.end))
                 
                 // Handle errors if any
                 if (errorCode != "") {
@@ -167,14 +168,13 @@ class ParserClass {
     }
     
 
-    func performActionUsingCaptures(captures: Int, startIndex: Int, block: (parser: ParserClass, text: String, inout errorCode: String) -> AnyObject?)
+    func performActionUsingCaptures(captures: Int, startIndex: Int, block: ParserClassAction)
     {
-        let capture = ParserClassCapture()
+        let capture = ParserClassCapture(block)
     
         capture.begin = captureStart
         capture.end = captureEnd
     
-        capture.action = block
         capture.parsedRange = Range<Int>(start: startIndex, end: _index - startIndex)
     
         capture.capturedResultsCount = captures;
@@ -271,7 +271,7 @@ class ParserClass {
         
     }
 
-    func invertWithCaptures(inout localCaptures: Int, startIndex: Int, block: (parser: ParserClass, startIndex: Int, inout localCaptures: Int) -> Bool) -> Bool
+    func invertWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
     {
         var temporaryCaptures = localCaptures
     
@@ -288,7 +288,7 @@ class ParserClass {
         return matched;
     }
     
-    func lookAheadWithCaptures(inout localCaptures: Int, startIndex: Int, block:(parser: ParserClass, startIndex: Int, inout localCaptures: Int) -> Bool) -> Bool
+    func lookAheadWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
     {
         let index=_index
     
@@ -320,7 +320,7 @@ class ParserClass {
         return true
     }
     
-    func matchOneWithCaptures(inout localCaptures: Int, startIndex: Int, block:(parser:ParserClass, startIndex: Int, inout localCaptures:Int) -> Bool) -> Bool
+    func matchOneWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
     {
         // We are in an error state. Just stop.
         if (_lastError) {
@@ -347,7 +347,7 @@ class ParserClass {
         return false
     }
     
-    func matchManyWithCaptures(inout localCaptures: Int, startIndex: Int, block:(parser:ParserClass, startIndex: Int, inout localCaptures:Int) -> Bool) -> Bool
+    func matchManyWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
     {
         // We are in an error state. Just stop.
         if (_lastError) {

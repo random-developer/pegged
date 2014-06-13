@@ -23,7 +23,6 @@
 
 /* Begin PBXBuildFile section */
 		650F37D21949B010002FFED6 /* CalculatorParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650F37D11949AFDB002FFED6 /* CalculatorParser.swift */; };
-		650F37D31949B0A0002FFED6 /* CalculatorParser.peg in Resources */ = {isa = PBXBuildFile; fileRef = 657E3A101945A27B00B3EC52 /* CalculatorParser.peg */; };
 		65526112194931D700F8AE5D /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65526111194931D700F8AE5D /* Calculator.swift */; };
 		657E3A0C1945A23500B3EC52 /* SwiftCalculatorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657E3A0B1945A23500B3EC52 /* SwiftCalculatorTest.swift */; };
 		79880669177C7AF60003B729 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -103,13 +102,6 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
-		650F37DF1949B2FE002FFED6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 650F37DB1949B261002FFED6;
-			remoteInfo = SwiftCalculatorPegRun;
-		};
 		657E3A131945A41800B3EC52 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -123,6 +115,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
 			remoteInfo = pegged;
+		};
+		65C30365194B1C39007ED56B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 650F37DB1949B261002FFED6;
+			remoteInfo = SwiftCalculatorPegRun;
 		};
 		79880663177C7AF60003B729 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -171,7 +170,7 @@
 		657E3A071945A23500B3EC52 /* SwiftCalculatorTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftCalculatorTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		657E3A0A1945A23500B3EC52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		657E3A0B1945A23500B3EC52 /* SwiftCalculatorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftCalculatorTest.swift; sourceTree = "<group>"; };
-		657E3A101945A27B00B3EC52 /* CalculatorParser.peg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CalculatorParser.peg; sourceTree = "<group>"; };
+		657E3A101945A27B00B3EC52 /* CalculatorParser.peg */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = CalculatorParser.peg; sourceTree = "<group>"; };
 		7988066F177C7AF60003B729 /* AST */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AST; sourceTree = BUILT_PRODUCTS_DIR; };
 		79880670177C7B1B0003B729 /* ASTParser.peg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ASTParser.peg; sourceTree = "<group>"; };
 		79880671177C7B1B0003B729 /* ASTNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTNode.h; sourceTree = "<group>"; };
@@ -480,7 +479,7 @@
 			);
 			dependencies = (
 				657E3A141945A41800B3EC52 /* PBXTargetDependency */,
-				650F37E01949B2FE002FFED6 /* PBXTargetDependency */,
+				65C30366194B1C39007ED56B /* PBXTargetDependency */,
 			);
 			name = SwiftCalculatorTest;
 			productName = SwiftCalculatorTest;
@@ -605,7 +604,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				650F37D31949B0A0002FFED6 /* CalculatorParser.peg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,11 +737,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		650F37E01949B2FE002FFED6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 650F37DB1949B261002FFED6 /* SwiftCalculatorPegRun */;
-			targetProxy = 650F37DF1949B2FE002FFED6 /* PBXContainerItemProxy */;
-		};
 		657E3A141945A41800B3EC52 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8DD76F960486AA7600D96B5E /* pegged */;
@@ -753,6 +746,11 @@
 			isa = PBXTargetDependency;
 			target = 8DD76F960486AA7600D96B5E /* pegged */;
 			targetProxy = 658E5A261949B379001CAE80 /* PBXContainerItemProxy */;
+		};
+		65C30366194B1C39007ED56B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 650F37DB1949B261002FFED6 /* SwiftCalculatorPegRun */;
+			targetProxy = 65C30365194B1C39007ED56B /* PBXContainerItemProxy */;
 		};
 		79880662177C7AF60003B729 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
