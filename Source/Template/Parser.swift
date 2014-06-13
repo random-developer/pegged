@@ -149,7 +149,7 @@ class ParserClass {
                     */
                     
                     
-                    self.pushResult(!result)
+                    self.pushResult(result!)
                 }
             }
             
