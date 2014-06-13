@@ -40,8 +40,8 @@ class SwiftCalculatorTest: XCTestCase {
     func testDecimal() {
         let parser = CalculatorParser()
         
-        XCTAssert(parser.parseString("0.5 * 10"))
-        XCTAssertEqual(parser.calculator.result, 5)
+        XCTAssert(parser.parseString("0.5 * 16"))
+        XCTAssertEqual(parser.calculator.result, 8)
     }
     
 }
