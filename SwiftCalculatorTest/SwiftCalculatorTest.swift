@@ -23,13 +23,25 @@ class SwiftCalculatorTest: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
+    func testSimple() {
         let parser = CalculatorParser()
   
         XCTAssert(parser.parseString("1 + 2"))
-        XCTAssertEqual(parser.calculator.result, 3, "The result should be 3")
+        XCTAssertEqual(parser.calculator.result, 3)
     }
 
+    func testComplex() {
+        let parser = CalculatorParser()
+        
+        XCTAssert(parser.parseString("(1 + 2) * (3 + 4)"))
+        XCTAssertEqual(parser.calculator.result, 21)
+    }
+    
+    func testDecimal() {
+        let parser = CalculatorParser()
+        
+        XCTAssert(parser.parseString("0.5 * 10"))
+        XCTAssertEqual(parser.calculator.result, 5)
+    }
     
 }

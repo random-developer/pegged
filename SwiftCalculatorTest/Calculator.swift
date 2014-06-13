@@ -74,7 +74,7 @@ class Calculator {
         }
         
         if(decimal >= 0) {
-            value = value / pow(10.0, Double(countElements(text) - decimal))
+            value = value / pow(10.0, Double(counter - decimal))
         }
         
         if(_negative) {

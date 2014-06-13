@@ -27,7 +27,9 @@ Terminal <- OPEN Primary CLOSE
           / "pow" OPEN Primary COMMA Primary CLOSE { parser.calculator.exponent() }
           / Number { parser.calculator.pushNumber(text) }
 
-Number <- < [\x30-\x39]+ > _
+Number <- < Digit+ "."? Digit* > _
+
+Digit <- [\x30-\x39]
 
 OPEN      <- '(' _
 CLOSE     <- ')' _

@@ -344,8 +344,8 @@ class ParserClass {
         // Restore old state
         _index=index
     
-        if (_captures.count > captureCount) {
-            _captures.replaceRange(Range<Int>(start: captureCount, end: _captures.count - captureCount), with: [])
+        while (_captures.count > captureCount) {
+            _captures.removeLast()
         }
     
         return false
