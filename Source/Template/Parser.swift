@@ -12,7 +12,7 @@ let ParserClassErrorStringLengthKey   = "ParserClassErrorStringLength"
 let ParserClassErrorStringKey         = "ParserClassErrorString"
 let ParserClassErrorTypeKey           = "ParserClassErrorType"
 
-typealias ParserClassRule = (parser: ParserClass, startIndex: Int, inout localCaptures: Int) -> Bool
+typealias ParserClassRule = (parser: ParserClass, startIndex: Int) -> Bool
 typealias ParserClassAction = (parser: ParserClass, text: String) -> AnyObject?
 
 class ParserClassCapture {
@@ -77,6 +77,10 @@ class ParserClass {
     
 //!$ExtraCode
 
+    init() {
+        
+    }
+    
     func yyText(from: Int, to: Int) -> String
     {
         let len = to - from
@@ -89,6 +93,12 @@ class ParserClass {
         return string.substringWithRange(Range<String.Index>(start: subStart, end: subEnd))
     }
 
+    func parseString(string : String) -> Bool {
+        var dummy : AnyObject?
+        
+        return parseString(string, result: &dummy)
+    }
+    
     /*!
     @abstract Parses the given string and passes the return value of the start rule as output argument.
     @discussion Returns YES on match.
@@ -168,17 +178,22 @@ class ParserClass {
     }
     
 
-    func performActionUsingCaptures(captures: Int, startIndex: Int, block: ParserClassAction)
+    func performActionUsingCaptures(startIndex: Int, block: ParserClassAction)
     {
         let capture = ParserClassCapture(block)
     
         capture.begin = captureStart
         capture.end = captureEnd
     
-        capture.parsedRange = Range<Int>(start: startIndex, end: _index - startIndex)
+        capture.parsedRange = Range<Int>(start: startIndex, end: _index)
     
-        capture.capturedResultsCount = captures;
-    
+        capture.capturedResultsCount = 0
+
+        /*
+        let txt = self.yyText(capture.begin, to: capture.end)
+        println("Captured '\(txt)'")
+        */
+        
         _captures += capture
     }
     
@@ -271,24 +286,17 @@ class ParserClass {
         
     }
 
-    func invertWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
+    func invertWithCaptures(startIndex: Int, block: ParserClassRule) -> Bool
     {
-        var temporaryCaptures = localCaptures
-    
         // We are in an error state. Just stop.
         if (_lastError) {
             return false
         }
     
-        let matched = !self.matchOneWithCaptures(&temporaryCaptures, startIndex:startIndex, block: block)
-        if (matched) {
-            localCaptures = temporaryCaptures
-        }
-    
-        return matched;
+        return !self.matchOneWithCaptures(startIndex, block: block)
     }
     
-    func lookAheadWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
+    func lookAheadWithCaptures(startIndex: Int, block: ParserClassRule) -> Bool
     {
         let index=_index
     
@@ -299,10 +307,8 @@ class ParserClass {
     
         let capturing = _capturing
         _capturing = false
-    
-        var temporaryCaptures = localCaptures
-    
-        let matched = block(parser: self, startIndex: startIndex, localCaptures: &temporaryCaptures)
+        
+        let matched = block(parser: self, startIndex: startIndex)
         _capturing = capturing;
         _index=index;
         _lastError = nil
@@ -320,7 +326,7 @@ class ParserClass {
         return true
     }
     
-    func matchOneWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
+    func matchOneWithCaptures(startIndex: Int, block: ParserClassRule) -> Bool
     {
         // We are in an error state. Just stop.
         if (_lastError) {
@@ -329,11 +335,9 @@ class ParserClass {
     
         let index = _index
         let captureCount = _captures.count
-        var temporaryCaptures = localCaptures
     
         // Try to match
-        if (block(parser: self, startIndex: startIndex, localCaptures: &temporaryCaptures)) {
-            localCaptures = temporaryCaptures
+        if (block(parser: self, startIndex: startIndex)) {
             return true
         }
     
@@ -341,13 +345,13 @@ class ParserClass {
         _index=index
     
         if (_captures.count > captureCount) {
-            _captures.replaceRange(Range<Int>(start: 0, end: captureCount), with: [])
+            _captures.replaceRange(Range<Int>(start: captureCount, end: _captures.count - captureCount), with: [])
         }
     
         return false
     }
     
-    func matchManyWithCaptures(inout localCaptures: Int, startIndex: Int, block: ParserClassRule) -> Bool
+    func matchManyWithCaptures(startIndex: Int, block: ParserClassRule) -> Bool
     {
         // We are in an error state. Just stop.
         if (_lastError) {
@@ -355,14 +359,14 @@ class ParserClass {
         }
     
         // We need at least one match
-        if (!self.matchOneWithCaptures(&localCaptures, startIndex:startIndex, block: block)) {
+        if (!self.matchOneWithCaptures(startIndex, block: block)) {
             return false
         }
     
         // Match others
         var lastIndex = _index
     
-        while (self.matchOneWithCaptures(&localCaptures, startIndex:startIndex, block: block)) {
+        while (self.matchOneWithCaptures(startIndex, block: block)) {
             // The match did not consume any string, but matched. It should be something like (.*)*. So we can stop to prevent an infinite loop.
             if (_index == lastIndex) {
                 break;
@@ -386,9 +390,7 @@ class ParserClass {
         }
 
         if(rule) {
-            var localCaptures: Int = 0
-            
-            if (matchOneWithCaptures(&localCaptures, startIndex:_index, block:rule!)) {
+            if (matchOneWithCaptures(_index, block:rule!)) {
                 return true
             }
         } else {

@@ -25,7 +25,10 @@ class SwiftCalculatorTest: XCTestCase {
     
     func testExample() {
         // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+        let parser = CalculatorParser()
+  
+        XCTAssert(parser.parseString("1 + 2"))
+        XCTAssertEqual(parser.calculator.result, 3, "The result should be 3")
     }
 
     

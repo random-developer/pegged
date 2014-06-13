@@ -163,7 +163,7 @@
             continue;
         }
         
-        [parser_rules addObject: [NSString stringWithFormat: @"\t\"%@\": {(parser: %@, startIndex: Int, inout localCaptures: Int) -> Bool in\n%@\n}", rule.name, self.className, [[[rule compile:self.className language: @"swift"] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]]];
+        [parser_rules addObject: [NSString stringWithFormat: @"\t\"%@\": {(parser: %@, startIndex: Int) -> Bool in\n%@\n}", rule.name, self.className, [[[rule compile:self.className language: @"swift"] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]]];
     }
     
     // Generate the source
