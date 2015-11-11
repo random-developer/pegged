@@ -6,16 +6,7 @@
 //  This code is in the public domain.
 //
 
-#import <Foundation/Foundation.h>
-
-
 @interface Property : NSObject
-{
-    NSString *_name;
-    NSString *_parameters;
-    NSString *_stars;
-    NSString *_type;
-}
 
 @property (copy) NSString *name;
 @property (copy) NSString *parameters;

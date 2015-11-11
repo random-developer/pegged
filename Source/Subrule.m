@@ -7,59 +7,54 @@
 //
 
 #import "Subrule.h"
-
 #import "Rule.h"
 
 @implementation Subrule
 
-@synthesize rule = _rule;
+#pragma mark - Terminal Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
+- (NSString *)condition:(NSString*)language
 {
-    [_rule release];
-    
-    [super dealloc];
+    if([language isEqualToString: @"swift"]) {
+        return [NSString stringWithFormat:@"parser.matchRule(\"%@\", startIndex:startIndex, asserted: %@)", self.rule.name, _asserted ? @"true" : @"false"];
+    } else {
+        return [NSString stringWithFormat:@"[parser matchRule: @\"%@\" startIndex:startIndex asserted:%@]", self.rule.name, _asserted ? @"YES" : @"NO"];
+    }
+}
+
+- (NSString *)compileIfAccepted:(NSString*)language
+{
+	if (_capturing)
+        if([language isEqualToString: @"swift"]) {
+            return @"localCaptures = localCaptures + 1\n";
+        } else {
+            return @"*localCaptures += 1;\n";
+        }
+	else
+		return nil;
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Terminal Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-- (NSString *) condition
++ (id)subruleWithRule:(Rule *)rule capturing:(BOOL)capturing asserted:(BOOL)asserted
 {
-    return [NSString stringWithFormat:@"[parser matchRule:@\"%@\"]", self.rule.name];
+    return [[[self class] alloc] initWithRule:rule capturing:capturing asserted:asserted];
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
-
-+ (id) subruleWithRule:(Rule *)rule
-{
-    return [[[[self class] alloc] initWithRule:rule] autorelease];
-}
-
-
-- (id) initWithRule:(Rule *)rule
+- (id)initWithRule:(Rule *)rule capturing:(BOOL)capturing asserted:(BOOL)asserted
 {
     self = [super init];
     
     if (self)
     {
-        _rule = [rule retain];
+        _rule = rule;
+		_capturing = capturing;
+		_asserted = asserted;
     }
     
     return self;
 }
-
 
 @end

@@ -11,14 +11,15 @@
 
 @implementation Dot
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Terminal Methods
-//==================================================================================================
+#pragma mark - Terminal Methods
 
-- (NSString *) condition
+- (NSString *)condition: (NSString*)language
 {
-    return @"[parser matchDot]";
+    if([language isEqualToString: @"swift"]) {
+        return @"parser.matchDot()";
+    } else {
+        return @"[parser matchDot]";
+    }
 }
 
 @end

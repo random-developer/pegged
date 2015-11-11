@@ -13,36 +13,15 @@
 
 @implementation Rule
 
-@synthesize name = _name;
-@synthesize used = _used;
+#pragma mark - Public Methods
 
-@synthesize definition = _definition;
-
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
++ (id)ruleWithName:(NSString*)name
 {
-    [_name release];
-    
-    [super dealloc];
+    return [[[self class] alloc] initWithName:name];
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
-
-+ (id) ruleWithName:(NSString*)name
-{
-    return [[[[self class] alloc] initWithName:name] autorelease];
-}
-
-
-- (id) initWithName:(NSString*)name
+- (id)initWithName:(NSString*)name
 {
     self = [super init];
     
@@ -55,24 +34,24 @@
 }
 
 
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString*)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendFormat: @"    yydebug((stderr, \"Rule: '%@'\\n\"))\n", self.name];
-    [code appendString: [self.definition compile:parserClassName]];
-    [code appendString: @"    return YES;\n"];
+    [code appendString: [[self.definition compile:parserClassName language: language] stringByRemovingTrailingWhitespace]];
+    if([language isEqualToString: @"swift"]) {
+        [code appendString: @"\n\nreturn true\n"];
+    } else {
+        [code appendString: @"\n\nreturn YES;\n"];
+    }
     
     return code;
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Properties
-//==================================================================================================
+#pragma mark - Public Properties
 
-- (BOOL) defined
+- (BOOL)defined
 {
     return self.definition != nil;
 }

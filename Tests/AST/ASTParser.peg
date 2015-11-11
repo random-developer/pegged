@@ -1,0 +1,23 @@
+@import "ASTNode.h";
+
+@import <stdio.h>;
+
+@property (nonatomic) NSString *foo;
+
+Equation					<- _ (%Expression / @!InvalidExpression) _ EndOfFile										^{ return [self nextResult]; }
+
+Expression					<- _ (AdditiveExpression / ListExpression) _
+AdditiveExpression			<- %MultiplicativeExpression (_ %AdditiveOperator _ @%AdditiveExpression)?					^{ if (self.resultCount == 1) return [self nextResult]; return [ASTNode astNodeWithName:@"ADD" operator:[self resultAtIndex:1] left:[self resultAtIndex:0] right:[self resultAtIndex:2]]; }
+MultiplicativeExpression	<- %PrimaryExpression (_ %MultiplicativeOperator _ @%MultiplicativeExpression)?				^{ if (self.resultCount == 1) return [self nextResult]; return [ASTNode astNodeWithName:@"MULT" operator:[self resultAtIndex:1] left:[self resultAtIndex:0] right:[self resultAtIndex:2]]; }
+
+ListExpression				<- '[' (%Expression)? (',' %Expression)* @']'												^{ return [ASTNode astNodeWithName:@"Additive" operator:@"+" children:self.allResults ]; }
+
+AdditiveOperator			<- (<'+'> / <'-'>)																			^{ return text; }
+MultiplicativeOperator		<- (<'*'> / <'/'>)																			^{ return text; }
+
+PrimaryExpression			<- NestedExpression / Number
+NestedExpression			<- _ '(' _ Expression _ @')' _
+Number						<- < [0-9]+ >																				^{ return [ASTNode astNodeWithValue: text.integerValue]; }
+
+_							<- ' '*
+EndOfFile					<- !.

@@ -8,20 +8,9 @@
 
 #import "Property.h"
 
-
 @implementation Property
 
-@synthesize name = _name;
-@synthesize parameters = _parameters;
-@synthesize stars = _stars;
-@synthesize type = _type;
-
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (id) init
+- (id)init
 {
     self = [super init];
     
@@ -36,24 +25,7 @@
     return self;
 }
 
-
-- (void) dealloc
-{
-    [_name release];
-    [_parameters release];
-    [_stars release];
-    [_type release];
-    
-    [super dealloc];
-}
-
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Private Methods
-//==================================================================================================
-
-- (BOOL) _typeIsPrivateClass
+- (BOOL)_typeIsPrivateClass
 {
     if (![_type length] || ![_stars length])
         return NO;
@@ -68,39 +40,35 @@
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-- (NSString *) declaration
+- (NSString *)declaration
 {
     return [self _typeIsPrivateClass] ? [NSString stringWithFormat:@"@class %@;\n", _type] : @"";
 }
 
 
-- (NSString *) import
+- (NSString *)import
 {
     return [self _typeIsPrivateClass] ? [NSString stringWithFormat:@"#import \"%@.h\"\n", _type] : @"";
 }
 
 
-- (NSString *) property
+- (NSString *)property
 {
     return [NSString stringWithFormat:@"@property %@ %@ %@%@;\n", _parameters, _type, _stars, _name];
 }
 
 
-- (NSString *) synthesize
+- (NSString *)synthesize
 {
     return [NSString stringWithFormat:@"@synthesize %@ = _%@;\n", _name, _name];
 }
 
 
-- (NSString *) variable
+- (NSString *)variable
 {
     return [NSString stringWithFormat:@"    %@ %@_%@;\n", _type, _stars, _name];
 }
-
 
 @end

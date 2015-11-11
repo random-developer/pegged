@@ -11,52 +11,34 @@
 
 @implementation Literal
 
-@synthesize caseInsensitive = _caseInsensitive;
-@synthesize string = _string;
+#pragma mark - Terminal Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
-
-- (void) dealloc
-{
-    [_string release];
-    
-    [super dealloc];
-}
-
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Terminal Methods
-//==================================================================================================
-
-- (NSString *) condition
+- (NSString *)condition: (NSString*)language
 {
     NSString *string = self.caseInsensitive ? [self.string lowercaseString] : self.string;
-    return [NSString stringWithFormat:@"[parser matchString:\"%@\"]", string];
+    if([language isEqualToString: @"swift"]) {
+        return [NSString stringWithFormat:@"parser.matchString(\"%@\", startIndex: startIndex, asserted: %@)", string, _asserted ? @"true" : @"false"];
+    } else {
+        return [NSString stringWithFormat:@"[parser matchString:\"%@\" startIndex:startIndex asserted:%@]", string, _asserted ? @"YES" : @"NO"];
+    }
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-+ (id) literalWithString:(NSString *)string
++ (id)literalWithString:(NSString *)string asserted:(BOOL)asserted
 {
-    return [[[[self class] alloc] initWithString:string] autorelease];
+    return [[[self class] alloc] initWithString:string asserted:asserted];
 }
 
 
-- (id) initWithString:(NSString *)string
+- (id)initWithString:(NSString *)string asserted:(BOOL)asserted
 {
     self = [super init];
     
-    if (self)
-    {
+    if (self) {
         _string = [string copy];
+		_asserted = asserted;
     }
     
     return self;

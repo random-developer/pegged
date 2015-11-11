@@ -12,82 +12,72 @@
 
 @implementation Quantifier
 
-@synthesize node = _node;
-@synthesize optional = _optional;
-@synthesize repeats = _repeats;
+#pragma mark - Node Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
-{
-    [_node release];
-    
-    [super dealloc];
-}
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Node Methods
-//==================================================================================================
-
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString *)language
 {
     NSMutableString *code = [NSMutableString string];
     
     NSString *selector = self.repeats ? @"matchMany" : @"matchOne";
     
-    if (self.optional)
-    {
-        [code appendString:@"    "];
-    }
-    else
-    {
-        [code appendString:@"    if (!"];
-    }
-    
-    [code appendFormat:@"[parser %@:^(%@ *parser){\n", selector, parserClassName];
-    [code appendString:[self.node compile:parserClassName]];
-    [code appendString:@"    return YES;"];
-    [code appendString:@"    }]"];
-    
-    if (self.optional)
-    {
-        [code appendFormat:@";\n"];
-    }
-    else
-    {
-        [code appendFormat:@") return NO;\n"];
+    if([language isEqualToString: @"swift"]) {
+        if (!self.optional)
+            [code appendString:@"if (!"];
+        
+        [code appendFormat:@"parser.%@WithCaptures(startIndex, block: {(parser: %@, startIndex: Int) -> Bool in\n", selector, parserClassName];
+        [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\treturn true\n"];
+        [code appendString:@"})\n"];
+        
+        if (self.optional)
+        {
+            [code appendFormat:@"\n"];
+        }
+        else
+        {
+            [code appendFormat:@") {\n\treturn false\n}\n"];
+        }
+    } else {
+        if (!self.optional)
+            [code appendString:@"if (!"];
+        
+        [code appendFormat:@"[parser %@WithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", selector, parserClassName];
+        [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\treturn YES;\n"];
+        [code appendString:@"}]"];
+        
+        if (self.optional)
+        {
+            [code appendFormat:@";\n"];
+        }
+        else
+        {
+            [code appendFormat:@")\n\treturn NO;\n"];
+        }
     }
     
     return code;
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-+ (id) quantifierWithNode:(Node *)node
++ (id)quantifierWithNode:(Node *)node
 {
-    return [[[[self class] alloc] initWithNode:node] autorelease];
+    return [[[self class] alloc] initWithNode:node];
 }
 
 
-- (id) initWithNode:(Node *)node
+- (id)initWithNode:(Node *)node
 {
     self = [super init];
     
     if (self)
     {
-        _node = [node retain];
+        _node = node;
     }
     
     return self;
 }
-
 
 @end

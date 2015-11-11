@@ -8,47 +8,25 @@
 
 #import "Condition.h"
 
-
 @implementation Condition
 
-@synthesize expression = _expression;
+#pragma mark - Terminal Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
-{
-    [_expression release];
-    
-    [super dealloc];
-}
-
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Terminal Methods
-//==================================================================================================
-
-- (NSString *) condition
+- (NSString *)condition:(NSString*) language
 {
     return [NSString stringWithFormat:@"(%@)", _expression];
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-+ (id) conditionWithExpression:(NSString *)expression
++ (id)conditionWithExpression:(NSString *)expression
 {
-    return [[[[self class] alloc] initWithExpression:expression] autorelease];
+    return [[[self class] alloc] initWithExpression:expression];
 }
 
 
-- (id) initWithExpression:(NSString *)expression
+- (id)initWithExpression:(NSString *)expression
 {
     self = [super init];
     

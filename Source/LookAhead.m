@@ -12,57 +12,42 @@
 
 @implementation LookAhead
 
-@synthesize node = _node;
+#pragma mark - Node Methods
 
-//==================================================================================================
-#pragma mark -
-#pragma mark NSObject Methods
-//==================================================================================================
-
-- (void) dealloc
-{
-    [_node release];
-    
-    [super dealloc];
-}
-
-//==================================================================================================
-#pragma mark -
-#pragma mark Node Methods
-//==================================================================================================
-
-- (NSString *) compile:(NSString *)parserClassName
+- (NSString *)compile:(NSString *)parserClassName language:(NSString *)language
 {
     NSMutableString *code = [NSMutableString string];
     
-    [code appendFormat:@"    if (![parser lookAhead:^(%@ *parser){\n", parserClassName];
-    [code appendString:[self.node compile:parserClassName]];
-    [code appendString:@"    return YES;"];
-    [code appendFormat:@"    }]) return NO;\n"];
+    if([language isEqualToString: @"swift"]) {
+        [code appendFormat: @"if( !parser.lookAheadWithCaptures(startIndex, block: {(parser: %@, startIndex: Int) -> Bool in\n", parserClassName];
+        [code appendString: [[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString: @"\n\n\treturn true"];
+        [code appendString: @"})) {\n\treturn false\n}"];
+    } else {
+        [code appendFormat: @"if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(%@ *parser, NSInteger startIndex, NSInteger *localCaptures) {\n", parserClassName];
+        [code appendString:[[[self.node compile:parserClassName language: language] stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
+        [code appendString:@"\n\n\treturn YES;\n"];
+        [code appendString:@"}])\n\treturn NO;\n"];
+    }
     
     return code;
 }
 
 
-//==================================================================================================
-#pragma mark -
-#pragma mark Public Methods
-//==================================================================================================
+#pragma mark - Public Methods
 
-+ (id) lookAheadWithNode:(Node *)node
++ (id)lookAheadWithNode:(Node *)node
 {
-    return [[[[self class] alloc] initWithNode:node] autorelease];
+    return [[[self class] alloc] initWithNode:node];
 }
 
 
-- (id) initWithNode:(Node *)node
+- (id)initWithNode:(Node *)node
 {
     self = [super init];
     
     if (self)
-    {
-        _node = [node retain];
-    }
+        _node = node;
     
     return self;
 }
