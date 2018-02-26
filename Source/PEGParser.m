@@ -791,8 +791,11 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 				return YES;
 			}];
 			
-			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
-				return NO;
+			[parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+				if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
+					return NO;
+				return YES;
+			}];
 			
 			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
 				 [self.compiler parsedImport:text];

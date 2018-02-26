@@ -9,7 +9,7 @@
 # [2] http://piumarta.com/software/peg/
 # 
 
-@import "Compiler.h";
+@import "Compiler.h"
 @class Compiler;
 
 @property (strong) Compiler *compiler;
@@ -19,7 +19,7 @@ Grammar <- Spacing Declaration* Spacing Definition+ EndOfFile
 
 Declaration <- OPTION "case-insensitive" HorizSpace* EndOfDecl { self.compiler.caseInsensitive = YES; }
              / OPTION "language" HorizSpace* Language EndOfDecl { self.compiler.language = text; }
-			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl { [self.compiler parsedImport:text]; }
+			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl? { [self.compiler parsedImport:text]; }
 			 / CLASSDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedClassPrototype: text]; }
 			 / PROTOCOLDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedProtocolPrototype: text]; }
              / PROPERTY (PropParamaters { [self.compiler parsedPropertyParameters:text]; })?
