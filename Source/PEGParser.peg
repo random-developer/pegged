@@ -19,6 +19,7 @@ Grammar <- Spacing Declaration* Spacing Definition+ EndOfFile
 
 Declaration <- OPTION "case-insensitive" HorizSpace* EndOfDecl { self.compiler.caseInsensitive = YES; }
              / OPTION "language" HorizSpace* Language EndOfDecl { self.compiler.language = text; }
+             / OPTION "enable-" ("printf"/"println") HorizSpace* EndOfDecl { self.compiler.enablePrintf = YES; }
 			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl? { [self.compiler parsedImport:text]; }
 			 / CLASSDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedClassPrototype: text]; }
 			 / PROTOCOLDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedProtocolPrototype: text]; }
@@ -40,7 +41,8 @@ Prefix     <- AND Suffix { [self.compiler parsedLookAhead]; }
             / NOT Action { [self.compiler parsedNegativeLookAhead:text]; }
             /     Suffix
             /     Effect
-Suffix     <- Primary ( QUESTION    { [self.compiler parsedQuestion]; }
+Suffix     <- Printf                { [self.compiler parsedPrintf:text]; }
+            / Primary ( QUESTION    { [self.compiler parsedQuestion]; }
                       / STAR        { [self.compiler parsedStar]; }
                       / PLUS        { [self.compiler parsedPlus]; }
                       )?
@@ -104,6 +106,7 @@ PROTOCOLDECL	<- '@protocol' HorizSpace+
 BEGIN      <- '<' Spacing
 END        <- '>' Spacing
 
+Printf     <- '@' ('printf' / 'println') '(' < [^)]* > ')' ';'? Spacing
 Code       <- '{{' < [^}]* > '}}' Spacing
 Action     <- '{' < [^}]* > '}' Spacing
 Fail	   <- '@!' < [a-zA-Z0-9]+ > Spacing

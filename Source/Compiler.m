@@ -378,6 +378,23 @@
 }
 
 
+- (void)parsedPrintf:(NSString *)code
+{
+    if (!self.enablePrintf) {
+        if([self.language isEqualToString: @"swift"])
+            code = [NSString stringWithFormat:@"/* @option enable-printf; not enabled.\n//%@\n*/", code];
+        else
+            code = [NSString stringWithFormat:@"#if 0 /* @option enable-printf; not enabled. */\n%@\n#endif", code];
+    } else {
+        if([self.language isEqualToString: @"swift"])
+            code = [NSString stringWithFormat:@"println(%@)", code];
+        else
+            code = [NSString stringWithFormat:@"printf(%@);", code];
+    }
+    [_stack addObject:[Code codeWithString:code]];
+}
+
+
 - (void)parsedQuestion
 {
     Node *node = [_stack lastObject];

@@ -23,6 +23,7 @@
     NSString *_propertyType;
     
     BOOL _caseInsensitive;
+    BOOL _enablePrintf;
     
     NSString *_className;
     NSString *_headerPath;
@@ -31,6 +32,7 @@
 }
 
 @property (assign) BOOL caseInsensitive;
+@property (assign) BOOL enablePrintf;
 
 @property (copy) NSString *className;
 @property (copy) NSString *headerPath;
@@ -59,6 +61,7 @@
 - (void) parsedNegativeLookAhead;
 - (void) parsedNegativeLookAhead:(NSString *)code;
 - (void) parsedPlus;
+- (void) parsedPrintf:(NSString *)code;
 - (void) parsedQuestion;
 - (void) parsedRule;
 - (void) parsedStar;
