@@ -92,7 +92,6 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorC
 @property (readonly) NSUInteger captureStart;
 @property (readonly) NSUInteger captureEnd;
 @property (readonly) NSString* string;
-
 @property (readonly) NSUInteger index;
 
 @end

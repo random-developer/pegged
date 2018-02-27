@@ -92,7 +92,6 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **er
 @property (readonly) NSUInteger captureStart;
 @property (readonly) NSUInteger captureEnd;
 @property (readonly) NSString* string;
-
 @property (readonly) NSUInteger index;
 
 @end
@@ -403,7 +402,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **er
 
 - (BOOL)parseString:(NSString *)string result:(id *)result
 {
-    _lastError = nil;numberWithUnsignedInteger:
+    _lastError = nil;
     return [self parseString:string asRule:@"$StartRule" result:result];
 }
 

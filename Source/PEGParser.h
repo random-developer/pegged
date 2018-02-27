@@ -89,6 +89,11 @@ extern NSString *PEGParserErrorTypeKey;
  */
 @property (readonly) NSString* string;
 
+/*!
+ @abstract The current location within the string
+ */
+@property (readonly) NSUInteger index;
+
 
 #pragma mark - Action helpers
 
