@@ -2365,6 +2365,12 @@ static PEGParserRule __SwiftImportIdentifier = ^(PEGParser *parser, NSInteger st
 
 - (BOOL)parseString:(NSString *)string result:(id *)result
 {
+    _lastError = nil;
+    return [self parseString:string asRule:@"Grammar" result:result];
+}
+
+- (BOOL)parseString:(NSString *)string asRule:(NSString *)ruleName result:(id *)result
+{
 	// Prepare parser input
 	_string = string;
 	#ifdef __PEG_PARSER_CASE_INSENSITIVE__
@@ -2382,7 +2388,7 @@ static PEGParserRule __SwiftImportIdentifier = ^(PEGParser *parser, NSInteger st
     _capturing = YES;
     
 	// Do string matching
-    BOOL matched = [self matchRule: @"Grammar" startIndex:_index asserted:YES];
+    BOOL matched = [self matchRule:ruleName startIndex:_index asserted:YES];
     
 	// Process actions
     if (matched) {

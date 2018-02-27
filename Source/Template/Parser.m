@@ -403,6 +403,12 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **er
 
 - (BOOL)parseString:(NSString *)string result:(id *)result
 {
+    _lastError = nil;numberWithUnsignedInteger:
+    return [self parseString:string asRule:@"$StartRule" result:result];
+}
+
+- (BOOL)parseString:(NSString *)string asRule:(NSString *)ruleName result:(id *)result
+{
 	// Prepare parser input
 	_string = string;
 	#ifdef __PEG_PARSER_CASE_INSENSITIVE__
@@ -420,7 +426,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **er
     _capturing = YES;
     
 	// Do string matching
-    BOOL matched = [self matchRule: @"$StartRule" startIndex:_index asserted:YES];
+    BOOL matched = [self matchRule:ruleName startIndex:_index asserted:YES];
     
 	// Process actions
     if (matched) {

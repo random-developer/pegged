@@ -57,6 +57,11 @@ extern NSString *ParserClassErrorTypeKey;
  */
 - (BOOL)parseString:(NSString *)string result:(id *)result;
 
+/*!
+ @abstract Parses the given string looking for a specific rule.
+ @discussion Returns YES on match.
+ */
+- (BOOL)parseString:(NSString *)string asRule:(NSString *)ruleName result:(id *)result;
 @end
 
 
