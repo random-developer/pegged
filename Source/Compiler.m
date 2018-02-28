@@ -41,6 +41,7 @@
         _rules      = [NSMutableDictionary new];
         _properties = [NSMutableArray new];
 		_imports	= [NSMutableArray new];
+        _interfaces = [NSMutableArray new];
 		_classes	= [NSMutableArray new];
 		_protocols  = [NSMutableArray new];
         _extraCode  = nil;
@@ -62,6 +63,7 @@
     
     NSMutableString *properties  = [NSMutableString new];
     NSMutableString *imports     = [NSMutableString new];
+    NSMutableString *interfaces  = [NSMutableString new];
     NSMutableString *synthesizes = [NSMutableString new];
     NSMutableString *variables   = [NSMutableString new];
     for (Property *property in _properties)
@@ -72,6 +74,7 @@
     }
     
     [imports	 appendString:[_imports componentsJoinedByString: @"\n"]];
+    [interfaces  appendString:[_interfaces componentsJoinedByString: @"\n"]];
     
     // Generate the header
     NSMutableString *header = [self getTemplateWithName: "HDRTEMP"];
@@ -91,6 +94,8 @@
         [header replaceOccurrencesOfString:@"$OtherProtocols\n" withString:@"" options:0 range:NSMakeRange(0, header.length)];
     
     [header replaceOccurrencesOfString:@"$Properties" withString:properties options:0 range:NSMakeRange(0, header.length)];
+
+    [header replaceOccurrencesOfString:@"$Interfaces" withString:interfaces options:0 range:NSMakeRange(0, header.length)];
     
     [header writeToFile:self.headerPath atomically:NO encoding:NSUTF8StringEncoding error:&error];
     
@@ -459,6 +464,11 @@
     } else {
         [_imports addObject: [NSString stringWithFormat:@"#import %@", import]];
     }
+}
+
+- (void) parsedInterfaceBlock:(NSString *)code
+{
+    [_interfaces addObject: code.copy];
 }
 
 - (void)parsedClassPrototype:(NSString *)classIdentifier

@@ -15,6 +15,7 @@
     Rule *_currentRule;
     
 	NSMutableArray *_imports;
+    NSMutableArray *_interfaces;
 	NSMutableArray *_classes;
 	NSMutableArray *_protocols;
     NSMutableArray *_properties;
@@ -69,6 +70,7 @@
 - (void) startRule:(NSString *)name;
 
 - (void) parsedImport:(NSString *)import;
+- (void) parsedInterfaceBlock:(NSString *)code;
 
 - (void) parsedClassPrototype:(NSString *)classIdentifier;
 - (void) parsedProtocolPrototype:(NSString *)protocolIdentifier;

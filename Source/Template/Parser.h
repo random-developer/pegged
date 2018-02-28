@@ -17,6 +17,7 @@
 
 //!$Properties
 
+//!$Interfaces
 
 #pragma mark - Error handling
 

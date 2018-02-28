@@ -14,14 +14,17 @@
 
 @property (strong) Compiler *compiler;
 
+
 # Hierarchical syntax
 Grammar <- Spacing Declaration* Spacing Definition+ EndOfFile
 
 Declaration <- OPTION "case-insensitive" HorizSpace* EndOfDecl { self.compiler.caseInsensitive = YES; }
              / OPTION "language" HorizSpace* Language EndOfDecl { self.compiler.language = text; }
              / OPTION "enable-" ("printf"/"println") HorizSpace* EndOfDecl { self.compiler.enablePrintf = YES; }
-             / INIT < InitBlock > Spacing { [self.compiler parsedInitBlock:text]; }
+             / IMPLEMENTATION < ( !END . )* > END Spacing { [self.compiler parsedExtraCode: text]; }
 			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl? { [self.compiler parsedImport:text]; }
+             / INIT < ( !END . )* > END Spacing { [self.compiler parsedInitBlock:text]; }
+             / INTERFACE < ( !END . )* > END Spacing { [self.compiler parsedInterfaceBlock:text]; }
 			 / CLASSDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedClassPrototype: text]; }
 			 / PROTOCOLDECL ClassIdentifier HorizSpace* EndOfDecl { [self.compiler parsedProtocolPrototype: text]; }
              / PROPERTY (PropParamaters { [self.compiler parsedPropertyParameters:text]; })?
@@ -61,8 +64,8 @@ Effect     <- Code      { [self.compiler parsedCode:text]; }
 			/ Action    { [self.compiler parsedAction:text returnValue:NO]; }
 			/ CIRCUMFLEX Action    { [self.compiler parsedAction:text returnValue:YES]; }
 			/ Fail		{ [self.compiler parsedFail: text]; }
-            / BEGIN     { [self.compiler beginCapture]; }
-            / END       { [self.compiler endCapture]; }
+            / BEGIN_CAP { [self.compiler beginCapture]; }
+            / END_CAP   { [self.compiler endCapture]; }
 
 # Lexical syntax
 Identifier <- < IdentStart IdentCont* > Spacing
@@ -101,26 +104,25 @@ EndOfFile  <- !.
 
 OPTION     <- '@option' HorizSpace+
 PROPERTY   <- '@property' HorizSpace+
+IMPLEMENTATION <- '@implementation' (!EndOfLine .)*
 IMPORT	   <- '@import' HorizSpace*
+INIT       <- '@init' Spacing
+INTERFACE  <- '@interface' Spacing
+END        <- '@end' Spacing
 CLASSDECL		<- '@class' HorizSpace+
 PROTOCOLDECL	<- '@protocol' HorizSpace+
-BEGIN      <- '<' Spacing
-END        <- '>' Spacing
+BEGIN_CAP  <- '<' Spacing
+END_CAP    <- '>' Spacing
 
 Printf     <- '@' ('printf' / 'println') '(' < [^)]* > ')' ';'? Spacing
 Code       <- '{{' < [^}]* > '}}' Spacing
 Action     <- '{' < [^}]* > '}' Spacing
 Fail	   <- '@!' < [a-zA-Z0-9]+ > Spacing
-
-INIT       <-'@init' Spacing
-InitBlock  <- InitCode
-InitCode   <- '{' InitBlock '}'
-            / NoBrace InitCode*
-NoBrace    <- (![{}] .)+
 					
 HorizSpace <- ' ' / '\t'
 
 # this isn't quite right yet, but it does what I need for the moment
+# note: this is staying for legacy reasons, but consider using @implementation instead.
 ExtraCode  <- '%%' < [^%]* > '%%' { [self.compiler parsedExtraCode: text]; }
 
 ImportIdentifier <- LocalImportIdentifier / GlobalImportIdentifier / SwiftImportIdentifier
