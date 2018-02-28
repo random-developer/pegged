@@ -38,6 +38,7 @@
 @property (copy) NSString *headerPath;
 @property (copy) NSString *sourcePath;
 @property (copy) NSString *extraCode;
+@property (copy) NSString *initializationCode;
 @property (copy) NSString *language;
 
 + (NSString *) unique:(NSString *)identifier;
@@ -78,4 +79,5 @@
 - (void) parsedPropertyName:(NSString *)name;
 - (void) parsedExtraCode:(NSString*)code;
 
+- (void) parsedInitBlock:(NSString *)code;
 @end

@@ -19,6 +19,17 @@ classes outside the NS* prefix.
 
 Properties must be declared before any rules.
 
+## Initialization
+
+Code may be added to the parser's init: method from inside the grammer. This is useful to,
+for example, initialize properties that have been declared. There may be zero or one initialization
+blocks defined; if additional blocks are defined they will replace any prior definitions.
+
+Example:
+
+    @init { printf("Hello, init\n"); }
+
+
 ## Options
 
 Currently, only one option is supported: case-insensitive. This makes all

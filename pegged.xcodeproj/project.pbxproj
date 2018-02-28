@@ -233,6 +233,7 @@
 		BEDCAA2610F82C46003C0737 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		BEDCAA2710F82C46003C0737 /* Condition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Condition.m; sourceTree = "<group>"; };
 		C6859EA3029092ED04C91782 /* pegged.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = pegged.1; sourceTree = "<group>"; };
+		F6B60A4B20461FD900C2ADE4 /* Syntax.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Syntax.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -441,6 +442,7 @@
 		C6859EA2029092E104C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
+				F6B60A4B20461FD900C2ADE4 /* Syntax.markdown */,
 				C6859EA3029092ED04C91782 /* pegged.1 */,
 			);
 			path = Documentation;

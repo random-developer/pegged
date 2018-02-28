@@ -136,6 +136,9 @@
     [source replaceOccurrencesOfString:@"$ParserDefinitions" withString:[definitions stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length)];
     [source replaceOccurrencesOfString:@"$StartRule" withString:_startRule.name options:0 range:NSMakeRange(0, source.length)];
     [source replaceOccurrencesOfString:@"$ParserDeclarations" withString:[declarations stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length) ];
+    if (!self.initializationCode)
+        self.initializationCode = @"";
+    [source replaceOccurrencesOfString:@"$InitializationBlock" withString:[self.initializationCode stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length) ];
     
     [source writeToFile:self.sourcePath atomically:NO encoding:NSUTF8StringEncoding error:&error];
 }
@@ -498,6 +501,15 @@
 
 - (void)parsedExtraCode:(NSString*)code {
     self.extraCode = code;
+}
+
+- (void) parsedInitBlock:(NSString *)code
+{
+    NSMutableArray *lines = [code componentsSeparatedByString:@"\n"].mutableCopy;
+    for (NSUInteger i = 0; i < lines.count; ++i) {
+        lines[i] = [@"\t\t" stringByAppendingString:lines[i]];
+    }
+    self.initializationCode = [lines componentsJoinedByString:@"\n"];
 }
 
 @end
