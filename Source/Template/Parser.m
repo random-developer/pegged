@@ -25,7 +25,7 @@ NSString *ParserClassErrorTypeKey				= @"ParserClassErrorType";
 typedef BOOL (^ParserClassRule)(ParserClass *parser, NSInteger startIndex, NSInteger *localCaptures);
 
 // A block implementing a certain parser action
-typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **errorCode);
+typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range, NSString **errorCode);
 
 
 /*!
@@ -450,7 +450,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSString **er
 			
 			NSString *errorCode;
 			
-			id result = capture.action(self, [self yyText:capture.begin to:capture.end], &errorCode);
+			id result = capture.action(self, [self yyText:capture.begin to:capture.end], NSMakeRange(capture.begin, capture.end - capture.begin), &errorCode);
 			
 			// Handle errors if any
 			if (errorCode) {

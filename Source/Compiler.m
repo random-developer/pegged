@@ -106,12 +106,12 @@
         [imports appendString:@"\n#define __PEG_PARSER_CASE_INSENSITIVE__\n"];
     }
     
-    if(self.extraCode) {
-        [definitions appendFormat: @"\n\n\
-         #pragma mark Extra Code\n\
-         \n\
-         %@\n\
-         \n", self.extraCode];
+    if(self.extraCode.length) {
+        [definitions appendFormat: @"\n\n"
+         "#pragma mark Extra Code\n"
+         "\n"
+         "%@\n"
+         "\n", self.extraCode];
     }
     
     for (NSString *name in [[_rules allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
@@ -510,7 +510,8 @@
 }
 
 - (void)parsedExtraCode:(NSString*)code {
-    self.extraCode = code;
+    NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"\\s$" options:0 error:NULL];
+    self.extraCode = [expression stringByReplacingMatchesInString:code options:0 range:NSMakeRange(0, code.length) withTemplate:@""];;
 }
 
 - (void) parsedInitBlock:(NSString *)code

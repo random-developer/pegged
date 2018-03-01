@@ -34,34 +34,34 @@ Example:
 
 ## Interfaces
 
-Method definitions may be added to the parser's @interface from inside the grammar. This is
-similar to the @property directive but it's a free-form block of code intended to provide method
+Method definitions may be added to the parser's `@interface` from inside the grammar. This is
+similar to the `@property` directive but it's a free-form block of code intended to provide method
 definitions to external clients.
 
 Example:
 
-    @interface {
+    @interface
     @property id helper; /* or use the @property directive */
     - (instancetype) initWithHelper:(id)helper;
-    }
+    @end
 
 This example should of course be backed up with a matching method.
 
 ## Implementation
 
 Parser implementation code may be added to the parser class by enclosing it between the
-@implementationand @end directives. This is useful to make additional methods available to the
+`@implementation` and `@end` directives. This is useful to make additional methods available to the
 parser, either for use by grammar actions or to be called by external callers (in conjunction
-with exposure to the methods through @interface  ... @end).
+with exposure to the methods through `@interface`  `...` `@end`).
 
-Objective-C requires an @implementation directive to have a name and optional modifiers.
+Objective-C requires an `@implementation` directive to have a name and optional modifiers.
 The directive supported here will ignore the rest of the line following the directive.
 
-Note that a reading of pegged's grammar will reveal an "ExtraCode" rule, allowing one to
+Note that a reading of pegged's grammar will reveal an `ExtraCode` rule, allowing one to
 define code to appear in the implementation as well. This is being retained for legacy purposes
 but should generally not be used; that grammar is limited in that it aborts upon seeing a
-single percent sign, which makes it impossible to, for example, put a printf() function with
-formatted data in the code. Internally, @implementation and ExtraCode share the same
+single percent sign, which makes it impossible to, for example, put a `printf()` function with
+formatted data in the code. Internally, `@implementation` and `ExtraCode` share the same
 support, so there may only be one of these present.
 
 Example:
@@ -86,8 +86,8 @@ string and character comparisons case-insensitive.
 
 Enclosed in curly braces, actions are executed only after the input is parsed
 successfully. They are put in their own block, and have access to both the
-parser itself (which provides access to the user-defined properties) and the
-text of the most recent capture.
+parser itself (which provides access to the user-defined properties)  the
+text of the most recent capture, and the range of that text within the total content being parsed.
 
     Grammar <- < .+ !. > { NSLog(@"the entire file: %@", text); }
 

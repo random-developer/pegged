@@ -25,7 +25,7 @@ NSString *PEGParserErrorTypeKey				= @"PEGParserErrorType";
 typedef BOOL (^PEGParserRule)(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures);
 
 // A block implementing a certain parser action
-typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSString **errorCode);
+typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NSString **errorCode);
 
 
 /*!
@@ -746,7 +746,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 self.compiler.caseInsensitive = YES;
 			
 				return nil;
@@ -775,7 +775,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 self.compiler.language = text;
 			
 				return nil;
@@ -820,7 +820,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 self.compiler.enablePrintf = YES;
 			
 				return nil;
@@ -859,7 +859,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedExtraCode: text];
 			
 				return nil;
@@ -888,7 +888,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 				return YES;
 			}];
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedImport:text];
 			
 				return nil;
@@ -927,7 +927,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedInitBlock:text];
 			
 				return nil;
@@ -966,7 +966,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedInterfaceBlock:text];
 			
 				return nil;
@@ -992,7 +992,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedClassPrototype: text];
 			
 				return nil;
@@ -1018,7 +1018,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedProtocolPrototype: text];
 			
 				return nil;
@@ -1036,7 +1036,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 				if (![parser matchRule: @"PropParamaters" startIndex:startIndex asserted:NO])
 					return NO;
 				
-				[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+				[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 					 [self.compiler parsedPropertyParameters:text];
 				
 					return nil;
@@ -1048,7 +1048,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"PropIdentifier" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedPropertyType:text];
 			
 				return nil;
@@ -1070,7 +1070,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 				return YES;
 			}];
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedPropertyStars:text];
 			
 				return nil;
@@ -1082,7 +1082,7 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			if (![parser matchRule: @"EndOfDecl" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedPropertyName:text];
 			
 				return nil;
@@ -1117,7 +1117,7 @@ static PEGParserRule __Definition = ^(PEGParser *parser, NSInteger startIndex, N
 	if (![parser matchRule: @"Identifier" startIndex:startIndex asserted:NO])
 		return NO;
 	
-	[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+	[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 		 [self.compiler startRule:text];
 	
 		return nil;
@@ -1129,7 +1129,7 @@ static PEGParserRule __Definition = ^(PEGParser *parser, NSInteger startIndex, N
 	if (![parser matchRule: @"Expression" startIndex:startIndex asserted:NO])
 		return NO;
 	
-	[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+	[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 		 [self.compiler parsedRule];
 	
 		return nil;
@@ -1164,7 +1164,7 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Code" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedCode:text];
 			
 				return nil;
@@ -1178,7 +1178,7 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Action" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedAction:text returnValue:NO];
 			
 				return nil;
@@ -1195,7 +1195,7 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Action" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedAction:text returnValue:YES];
 			
 				return nil;
@@ -1209,7 +1209,7 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Fail" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedFail: text];
 			
 				return nil;
@@ -1223,7 +1223,7 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"BEGIN_CAP" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler beginCapture];
 			
 				return nil;
@@ -1237,7 +1237,7 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"END_CAP" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler endCapture];
 			
 				return nil;
@@ -1339,7 +1339,7 @@ static PEGParserRule __Expression = ^(PEGParser *parser, NSInteger startIndex, N
 		if (![parser matchRule: @"Sequence" startIndex:startIndex asserted:NO])
 			return NO;
 		
-		[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+		[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 			 [self.compiler parsedAlternate];
 		
 			return nil;
@@ -1368,7 +1368,7 @@ static PEGParserRule __ExtraCode = ^(PEGParser *parser, NSInteger startIndex, NS
 	if (![parser matchString:"%%" startIndex:startIndex asserted:NO])
 		return NO;
 	
-	[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+	[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 		 [self.compiler parsedExtraCode: text];
 	
 		return nil;
@@ -1526,8 +1526,20 @@ static PEGParserRule __INTERFACE = ^(PEGParser *parser, NSInteger startIndex, NS
 	if (![parser matchString:"@interface" startIndex:startIndex asserted:NO])
 		return NO;
 	
-	if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
-		return NO;
+	[parser matchManyWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+		if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+			if ([parser matchRule: @"EndOfLine" startIndex:startIndex asserted:NO])
+				return NO;
+		
+			return YES;
+		}])
+			return NO;
+		
+		if (![parser matchDot])
+			return NO;
+	
+		return YES;
+	}];
 	
 	return YES;
 };
@@ -1850,7 +1862,7 @@ static PEGParserRule __Prefix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Suffix" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedLookAhead];
 			
 				return nil;
@@ -1867,7 +1879,7 @@ static PEGParserRule __Prefix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Suffix" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedNegativeLookAhead];
 			
 				return nil;
@@ -1884,7 +1896,7 @@ static PEGParserRule __Prefix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Action" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedLookAhead:text];
 			
 				return nil;
@@ -1901,7 +1913,7 @@ static PEGParserRule __Prefix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Action" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedNegativeLookAhead:text];
 			
 				return nil;
@@ -1946,7 +1958,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			}])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedIdentifier:text capturing:NO asserted:NO];
 			
 				return nil;
@@ -1971,7 +1983,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			}])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedIdentifier:text capturing:YES asserted:NO];
 			
 				return nil;
@@ -1996,7 +2008,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			}])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedIdentifier:text capturing:NO asserted:YES];
 			
 				return nil;
@@ -2024,7 +2036,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			}])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedIdentifier:text capturing:YES asserted:YES];
 			
 				return nil;
@@ -2052,7 +2064,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			if (![parser matchRule: @"Literal" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedLiteral:text asserted:NO];
 			
 				return nil;
@@ -2069,7 +2081,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			if (![parser matchRule: @"Literal" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedLiteral:text asserted:YES];
 			
 				return nil;
@@ -2083,7 +2095,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			if (![parser matchRule: @"Class" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedClass:text];
 			
 				return nil;
@@ -2097,7 +2109,7 @@ static PEGParserRule __Primary = ^(PEGParser *parser, NSInteger startIndex, NSIn
 			if (![parser matchRule: @"DOT" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedDot];
 			
 				return nil;
@@ -2352,7 +2364,7 @@ static PEGParserRule __Sequence = ^(PEGParser *parser, NSInteger startIndex, NSI
 		if (![parser matchRule: @"Prefix" startIndex:startIndex asserted:NO])
 			return NO;
 		
-		[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+		[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 			 [self.compiler append];
 		
 			return nil;
@@ -2427,7 +2439,7 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			if (![parser matchRule: @"Printf" startIndex:startIndex asserted:NO])
 				return NO;
 			
-			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 				 [self.compiler parsedPrintf:text];
 			
 				return nil;
@@ -2447,7 +2459,7 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 						if (![parser matchRule: @"QUESTION" startIndex:startIndex asserted:NO])
 							return NO;
 						
-						[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+						[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 							 [self.compiler parsedQuestion];
 						
 							return nil;
@@ -2461,7 +2473,7 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 						if (![parser matchRule: @"STAR" startIndex:startIndex asserted:NO])
 							return NO;
 						
-						[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+						[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 							 [self.compiler parsedStar];
 						
 							return nil;
@@ -2475,7 +2487,7 @@ static PEGParserRule __Suffix = ^(PEGParser *parser, NSInteger startIndex, NSInt
 						if (![parser matchRule: @"PLUS" startIndex:startIndex asserted:NO])
 							return NO;
 						
-						[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSString **errorCode) {
+						[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSString **errorCode) {
 							 [self.compiler parsedPlus];
 						
 							return nil;
@@ -2585,7 +2597,7 @@ static PEGParserRule __SwiftImportIdentifier = ^(PEGParser *parser, NSInteger st
 			
 			NSString *errorCode;
 			
-			id result = capture.action(self, [self yyText:capture.begin to:capture.end], &errorCode);
+			id result = capture.action(self, [self yyText:capture.begin to:capture.end], NSMakeRange(capture.begin, capture.end - capture.begin), &errorCode);
 			
 			// Handle errors if any
 			if (errorCode) {

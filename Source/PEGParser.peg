@@ -107,7 +107,7 @@ PROPERTY   <- '@property' HorizSpace+
 IMPLEMENTATION <- '@implementation' (!EndOfLine .)*
 IMPORT	   <- '@import' HorizSpace*
 INIT       <- '@init' Spacing
-INTERFACE  <- '@interface' Spacing
+INTERFACE  <- '@interface' (!EndOfLine .)*
 END        <- '@end' Spacing
 CLASSDECL		<- '@class' HorizSpace+
 PROTOCOLDECL	<- '@protocol' HorizSpace+
