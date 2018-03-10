@@ -20,6 +20,7 @@
 #import "Node.h"
 #import "Quantifier.h"
 #import "Property.h"
+#import "Regex.h"
 #import "Rule.h"
 #import "Sequence.h"
 #import "Subrule.h"
@@ -412,6 +413,14 @@
     quantifier.optional = YES;
     quantifier.repeats  = NO;
     [_stack addObject:quantifier];
+}
+
+
+- (void) parsedRegex:(NSString *)regex
+{
+    Regex *node = [Regex regexWithString:regex];
+    node.caseInsensitive = self.caseInsensitive;
+    [_stack addObject:node];
 }
 
 

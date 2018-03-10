@@ -58,6 +58,7 @@ Primary    <- Identifier !LEFTARROW { [self.compiler parsedIdentifier:text captu
             / Literal      { [self.compiler parsedLiteral:text asserted:NO]; }
             / AT Literal   { [self.compiler parsedLiteral:text asserted:YES]; }
             / Class     { [self.compiler parsedClass:text]; }
+            / Regex     { [self.compiler parsedRegex:text]; }
             / DOT       { [self.compiler parsedDot]; }
 
 Effect     <- Code      { [self.compiler parsedCode:text]; }
@@ -76,7 +77,8 @@ Literal    <- ['] < (!['] Char)*  > ['] Spacing
             / ["] < (!["] Char)*  > ["] Spacing
 Class      <- '[' < (!']' Range)* > ']' Spacing
 Range      <- Char '-' Char / Char
-Char       <- '\\' [nrt'"\[\]\\]
+Regex      <- [=] < (![=] Char)*  > [=] Spacing
+Char       <- '\\' [nrt'"=\[\]\\]
             / '\\' [0-2][0-7][0-7]
             / '\\' [0-7][0-7]?
             / '\\x' [0-9a-fA-F][0-9a-fA-F]

@@ -25,7 +25,7 @@ NSString *ParserClassErrorTypeKey				= @"ParserClassErrorType";
 typedef BOOL (^ParserClassRule)(ParserClass *parser, NSInteger startIndex, NSInteger *localCaptures);
 
 // A block implementing a certain parser action
-typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range, NSString **errorCode);
+typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range, NSArray <NSString *> *captures, NSString **errorCode);
 
 
 /*!
@@ -39,6 +39,9 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 
 // The parsed ranged used for this capture
 @property NSRange parsedRange;
+
+// captures as part of a regex
+@property NSArray <NSString *> *regexCaptures;
 
 // The action associated with a capture
 @property (copy) ParserClassAction action;
@@ -78,6 +81,9 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 	
 	// All currently matched captures
 	NSMutableArray *_captures;
+
+    // Captures from the most recent matched regex
+    NSArray <NSString *> *_regexCaptures;
 	
 	// The results of the last actions
 	NSMutableArray *_actionResults;
@@ -121,7 +127,10 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 
 - (void)beginCapture
 {
-    if (_capturing) _captureStart = _index;
+    if (_capturing) {
+        _captureStart = _index;
+        _regexCaptures = nil;
+    }
 }
 
 - (void)endCapture
@@ -269,6 +278,32 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
     return YES;
 }
 
+- (BOOL)matchRegex:(char *)regex startIndex:(NSInteger)startIndex asserted:(BOOL)asserted
+{
+    NSString *anchoredExpression = [NSString stringWithFormat:@"^%s", regex];
+    NSRegularExpressionOptions options = NSRegularExpressionAnchorsMatchLines;
+    NSRegularExpression *rx = [NSRegularExpression regularExpressionWithPattern:anchoredExpression options:options error:nil];
+    NSArray <NSTextCheckingResult *> *matches = [rx matchesInString:_string options:0 range:NSMakeRange(startIndex, _limit - startIndex)];
+    if (!matches.count) {
+        if (asserted)
+            [self setErrorWithMessage: [NSString stringWithFormat: @"Unmatched Regex:%s", regex] location:startIndex length:1];
+        return NO;
+    }
+
+    NSMutableArray <NSString *> *captures = [NSMutableArray new];
+    for (NSUInteger i = 0; i < matches[0].numberOfRanges; ++i) {
+        NSRange r = [matches[0] rangeAtIndex:i];
+        if (r.location != NSNotFound)
+            [captures addObject:[_string substringWithRange:r]];
+        else
+            [captures addObject:@""];
+    }
+
+    _regexCaptures = captures.copy;
+    _index += captures[0].length;
+    return YES;
+}
+
 - (BOOL)matchClass:(unsigned char *)bits
 {
     if (_index >= _limit) return NO;
@@ -316,6 +351,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
     
 	capture.action = action;
 	capture.parsedRange = NSMakeRange(startIndex, _index - startIndex);
+    capture.regexCaptures = _regexCaptures;
 	
 	capture.capturedResultsCount = captures;
 
@@ -450,7 +486,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 			
 			NSString *errorCode;
 			
-			id result = capture.action(self, [self yyText:capture.begin to:capture.end], NSMakeRange(capture.begin, capture.end - capture.begin), &errorCode);
+			id result = capture.action(self, [self yyText:capture.begin to:capture.end], NSMakeRange(capture.begin, capture.end - capture.begin), capture.regexCaptures, &errorCode);
 			
 			// Handle errors if any
 			if (errorCode) {

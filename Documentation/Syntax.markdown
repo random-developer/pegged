@@ -105,3 +105,25 @@ C statements can also be evaluated for truth, just like any other rule.
     Rule <- A !{ 0 /* this rule will never match */ } B
           / C &{ 1 /* this rule will always match */ } D
 
+## Regular Expressions
+
+Regular expressions may be used as terminals, and their captures may be made available
+to actions (currently only supported for Objective-C parser generation). Regular expressions
+used as terminals must be enclosed within balanced `=` and any embedded `=` must be
+escaped with a backslash. Since regular expressions will typically be used for their ability
+to capture elements within the expression, they will most often appear within `<` and `>`,
+making `<=ab+=>` the expression to use to match a single `a` followed by 1 or more `b`s.
+
+For example, the following rule:
+
+    Rule <- <=a(b+)=> { NSLog(@"Captures: %@", capture); }
+
+with `abbb` as input will produce the following output:
+
+    2018-03-10 11:32:41.995 pegged[73027:11961383] Captures: (
+        abbb,
+        bbb
+    )
+
+Notice that there will always be a `capture[0]` which matches the entire captured text.
+

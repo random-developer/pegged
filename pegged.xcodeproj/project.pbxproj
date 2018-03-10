@@ -60,6 +60,7 @@
 		BECEF81910DB3CA50067BA1E /* PEGParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BECEF81810DB3CA50067BA1E /* PEGParser.m */; };
 		BECEF82610DC1F4F0067BA1E /* Compiler.m in Sources */ = {isa = PBXBuildFile; fileRef = BECEF82510DC1F4F0067BA1E /* Compiler.m */; };
 		BEDCAA2810F82C46003C0737 /* Condition.m in Sources */ = {isa = PBXBuildFile; fileRef = BEDCAA2710F82C46003C0737 /* Condition.m */; };
+		F6B28CB320543DD8009502AB /* Regex.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B28CB120543DD8009502AB /* Regex.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -233,6 +234,8 @@
 		BEDCAA2610F82C46003C0737 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		BEDCAA2710F82C46003C0737 /* Condition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Condition.m; sourceTree = "<group>"; };
 		C6859EA3029092ED04C91782 /* pegged.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = pegged.1; sourceTree = "<group>"; };
+		F6B28CB120543DD8009502AB /* Regex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Regex.m; sourceTree = "<group>"; };
+		F6B28CB220543DD8009502AB /* Regex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Regex.h; sourceTree = "<group>"; };
 		F6B60A4B20461FD900C2ADE4 /* Syntax.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Syntax.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -328,6 +331,8 @@
 				BECEF83510DC4EF00067BA1E /* PEGParser.peg */,
 				08FB7796FE84155DC02AAC07 /* pegged.m */,
 				32A70AAB03705E1F00C91783 /* pegged_Prefix.pch */,
+				F6B28CB220543DD8009502AB /* Regex.h */,
+				F6B28CB120543DD8009502AB /* Regex.m */,
 				BE962FDE10E97DA3007629F6 /* Rule.h */,
 				BE962FDF10E97DA3007629F6 /* Rule.m */,
 				BE962FFF10EAE499007629F6 /* Sequence.h */,
@@ -694,6 +699,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9A0486AA7600D96B5E /* pegged.m in Sources */,
+				F6B28CB320543DD8009502AB /* Regex.m in Sources */,
 				BECEF81910DB3CA50067BA1E /* PEGParser.m in Sources */,
 				BECEF82610DC1F4F0067BA1E /* Compiler.m in Sources */,
 				BE962FE010E97DA3007629F6 /* Rule.m in Sources */,

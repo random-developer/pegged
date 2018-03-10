@@ -65,6 +65,7 @@
 - (void) parsedPlus;
 - (void) parsedPrintf:(NSString *)code;
 - (void) parsedQuestion;
+- (void) parsedRegex:(NSString *)regex;
 - (void) parsedRule;
 - (void) parsedStar;
 - (void) startRule:(NSString *)name;

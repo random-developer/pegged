@@ -33,7 +33,7 @@
             [code appendString: @"\n"];
         [code appendString:@"})\n"];
     } else {
-        [code appendFormat:@"[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(%@ *self, NSString *text, NSRange range, NSString **errorCode) {\n", parserClassName];
+        [code appendFormat:@"[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(%@ *self, NSString *text, NSRange range, NSArray <NSString *> *capture, NSString **errorCode) {\n", parserClassName];
         [code appendString:[[_code stringByAddingIndentationWithCount: 1] stringByRemovingTrailingWhitespace]];
         if (!_hasReturnValue)
             [code appendString: @"\n\n\treturn nil;\n"];
