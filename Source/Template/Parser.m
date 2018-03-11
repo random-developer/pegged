@@ -283,10 +283,10 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
     NSString *anchoredExpression = [NSString stringWithFormat:@"^%s", regex];
     NSRegularExpressionOptions options = NSRegularExpressionAnchorsMatchLines;
     NSRegularExpression *rx = [NSRegularExpression regularExpressionWithPattern:anchoredExpression options:options error:nil];
-    NSArray <NSTextCheckingResult *> *matches = [rx matchesInString:_string options:0 range:NSMakeRange(startIndex, _limit - startIndex)];
+    NSArray <NSTextCheckingResult *> *matches = [rx matchesInString:_string options:0 range:NSMakeRange(_index, _limit - _index)];
     if (!matches.count) {
         if (asserted)
-            [self setErrorWithMessage: [NSString stringWithFormat: @"Unmatched Regex:%s", regex] location:startIndex length:1];
+            [self setErrorWithMessage: [NSString stringWithFormat: @"Unmatched Regex:%s", regex] location:_index length:1];
         return NO;
     }
 
