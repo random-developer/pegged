@@ -21,7 +21,10 @@ Grammar <- Spacing Declaration* Spacing Definition+ EndOfFile
 Declaration <- OPTION "case-insensitive" HorizSpace* EndOfDecl { self.compiler.caseInsensitive = YES; }
              / OPTION "language" HorizSpace* Language EndOfDecl { self.compiler.language = text; }
              / OPTION "enable-" ("printf"/"println") HorizSpace* EndOfDecl { self.compiler.enablePrintf = YES; }
-             / CATEGORY < ( !END . )* > END Spacing { [self.compiler parsedCategory: text]; }
+             / CATEGORY < (
+                  INTERFACE ( !END . )* END Spacing
+                / IMPLEMENTATION ( !END . )* END Spacing
+                / (!END .))* > END Spacing { [self.compiler parsedCategory: text]; }
              / IMPLEMENTATION < ( !END . )* > END Spacing { [self.compiler parsedExtraCode: text]; }
 			 / IMPORT ImportIdentifier HorizSpace* EndOfDecl? { [self.compiler parsedImport:text]; }
              / INIT < ( !END . )* > END Spacing { [self.compiler parsedInitBlock:text]; }

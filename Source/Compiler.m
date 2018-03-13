@@ -146,7 +146,7 @@
     if (!self.initializationCode)
         self.initializationCode = @"";
     [source replaceOccurrencesOfString:@"$InitializationBlock" withString:[self.initializationCode stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length) ];
-    [source replaceOccurrencesOfString:@"$CategoriesCode" withString: [_categoriesCode stringByAddingIndentationWithCount: 1] options:0 range:NSMakeRange(0, source.length)];
+    [source replaceOccurrencesOfString:@"$CategoriesCode" withString: [_categoriesCode stringByAddingIndentationWithCount: 0] options:0 range:NSMakeRange(0, source.length)];
     
     [source writeToFile:self.sourcePath atomically:NO encoding:NSUTF8StringEncoding error:&error];
 }

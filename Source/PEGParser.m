@@ -104,7 +104,6 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 @end
 
 
-	
 
 
 @implementation PEGParser
@@ -900,15 +899,83 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			[parser beginCapture];
 			
 			[parser matchManyWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
-				if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
-					if ([parser matchRule: @"END" startIndex:startIndex asserted:NO])
-						return NO;
+				if (![parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+					if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+						if (![parser matchRule: @"INTERFACE" startIndex:startIndex asserted:NO])
+							return NO;
+						
+						[parser matchManyWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+							if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+								if ([parser matchRule: @"END" startIndex:startIndex asserted:NO])
+									return NO;
+							
+								return YES;
+							}])
+								return NO;
+							
+							if (![parser matchDot])
+								return NO;
+						
+							return YES;
+						}];
+						
+						if (![parser matchRule: @"END" startIndex:startIndex asserted:NO])
+							return NO;
+						
+						if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
+							return NO;
+					
+						return YES;
+					}])
+						return YES;
 				
-					return YES;
-				}])
+					if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+						if (![parser matchRule: @"IMPLEMENTATION" startIndex:startIndex asserted:NO])
+							return NO;
+						
+						[parser matchManyWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+							if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+								if ([parser matchRule: @"END" startIndex:startIndex asserted:NO])
+									return NO;
+							
+								return YES;
+							}])
+								return NO;
+							
+							if (![parser matchDot])
+								return NO;
+						
+							return YES;
+						}];
+						
+						if (![parser matchRule: @"END" startIndex:startIndex asserted:NO])
+							return NO;
+						
+						if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
+							return NO;
+					
+						return YES;
+					}])
+						return YES;
+				
+					if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+						if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+							if ([parser matchRule: @"END" startIndex:startIndex asserted:NO])
+								return NO;
+						
+							return YES;
+						}])
+							return NO;
+						
+						if (![parser matchDot])
+							return NO;
+					
+						return YES;
+					}])
+						return YES;
+				
 					return NO;
-				
-				if (![parser matchDot])
+				}])
 					return NO;
 			
 				return YES;
