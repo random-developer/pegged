@@ -104,6 +104,9 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 @end
 
 
+	
+
+
 @implementation PEGParser
 
 - (id)init
@@ -118,6 +121,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 		[self addRule:__AT withName:@"AT"];
 		[self addRule:__Action withName:@"Action"];
 		[self addRule:__BEGIN_CAP withName:@"BEGIN_CAP"];
+		[self addRule:__CATEGORY withName:@"CATEGORY"];
 		[self addRule:__CIRCUMFLEX withName:@"CIRCUMFLEX"];
 		[self addRule:__CLASSDECL withName:@"CLASSDECL"];
 		[self addRule:__CLOSE withName:@"CLOSE"];
@@ -537,6 +541,28 @@ static PEGParserRule __BEGIN_CAP = ^(PEGParser *parser, NSInteger startIndex, NS
 	return YES;
 };
 
+static PEGParserRule __CATEGORY = ^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+	if (![parser matchString:"@category" startIndex:startIndex asserted:NO])
+		return NO;
+	
+	[parser matchManyWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+		if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+			if ([parser matchRule: @"EndOfLine" startIndex:startIndex asserted:NO])
+				return NO;
+		
+			return YES;
+		}])
+			return NO;
+		
+		if (![parser matchDot])
+			return NO;
+	
+		return YES;
+	}];
+	
+	return YES;
+};
+
 static PEGParserRule __CIRCUMFLEX = ^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
 	if (![parser matchString:"^" startIndex:startIndex asserted:NO])
 		return NO;
@@ -859,6 +885,45 @@ static PEGParserRule __Declaration = ^(PEGParser *parser, NSInteger startIndex, 
 			
 			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSArray <NSString *> *capture, NSString **errorCode) {
 				 self.compiler.enablePrintf = YES;
+			
+				return nil;
+			}];
+		
+			return YES;
+		}])
+			return YES;
+	
+		if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+			if (![parser matchRule: @"CATEGORY" startIndex:startIndex asserted:NO])
+				return NO;
+			
+			[parser beginCapture];
+			
+			[parser matchManyWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+				if (![parser lookAheadWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+					if ([parser matchRule: @"END" startIndex:startIndex asserted:NO])
+						return NO;
+				
+					return YES;
+				}])
+					return NO;
+				
+				if (![parser matchDot])
+					return NO;
+			
+				return YES;
+			}];
+			
+			[parser endCapture];
+			
+			if (![parser matchRule: @"END" startIndex:startIndex asserted:NO])
+				return NO;
+			
+			if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
+				return NO;
+			
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSArray <NSString *> *capture, NSString **errorCode) {
+				 [self.compiler parsedCategory: text];
 			
 				return nil;
 			}];

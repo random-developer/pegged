@@ -104,6 +104,8 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 @end
 
 
+//!$CategoriesCode
+
 @implementation ParserClass
 
 - (id)init

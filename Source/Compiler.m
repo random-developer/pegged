@@ -46,6 +46,7 @@
 		_classes	= [NSMutableArray new];
 		_protocols  = [NSMutableArray new];
         _extraCode  = nil;
+        _categoriesCode = @"";
         _language   = @"objc";
     }
     
@@ -145,6 +146,7 @@
     if (!self.initializationCode)
         self.initializationCode = @"";
     [source replaceOccurrencesOfString:@"$InitializationBlock" withString:[self.initializationCode stringByRemovingTrailingWhitespace] options:0 range:NSMakeRange(0, source.length) ];
+    [source replaceOccurrencesOfString:@"$CategoriesCode" withString: [_categoriesCode stringByAddingIndentationWithCount: 1] options:0 range:NSMakeRange(0, source.length)];
     
     [source writeToFile:self.sourcePath atomically:NO encoding:NSUTF8StringEncoding error:&error];
 }
@@ -520,7 +522,13 @@
 
 - (void)parsedExtraCode:(NSString*)code {
     NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"\\s$" options:0 error:NULL];
-    self.extraCode = [expression stringByReplacingMatchesInString:code options:0 range:NSMakeRange(0, code.length) withTemplate:@""];;
+    self.extraCode = [expression stringByReplacingMatchesInString:code options:0 range:NSMakeRange(0, code.length) withTemplate:@""];
+}
+
+- (void) parsedCategory:(NSString*)code {
+    NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"\\s$" options:0 error:NULL];
+    NSString *newCategories = [expression stringByReplacingMatchesInString:code options:0 range:NSMakeRange(0, code.length) withTemplate:@""];
+    self.categoriesCode = [self.categoriesCode stringByAppendingString:newCategories];
 }
 
 - (void) parsedInitBlock:(NSString *)code

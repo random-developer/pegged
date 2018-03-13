@@ -47,6 +47,13 @@ Example:
 
 This example should of course be backed up with a matching method.
 
+## Category
+
+Sometimes there's a use to declare a category on external classes (or otherwise place some
+declarations inside the parser source file, but outside of any existing code scopes within that
+file). This can be accomplished through th `@category` `...` `@end` sequence. Multiple
+category blocks may be declared within the grammar; they will be concatenated.
+
 ## Implementation
 
 Parser implementation code may be added to the parser class by enclosing it between the
