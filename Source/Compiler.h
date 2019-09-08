@@ -61,6 +61,7 @@
 - (void) parsedLiteral:(NSString *)literal asserted:(BOOL)asserted;
 - (void) parsedLookAhead;
 - (void) parsedLookAhead:(NSString *)code;
+- (void) parsedNamedCapture:(NSString *)captureName;
 - (void) parsedNegativeLookAhead;
 - (void) parsedNegativeLookAhead:(NSString *)code;
 - (void) parsedPlus;

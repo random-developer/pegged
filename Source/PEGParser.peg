@@ -61,16 +61,17 @@ Primary    <- Identifier !LEFTARROW { [self.compiler parsedIdentifier:text captu
             / OPEN Expression CLOSE
             / Literal      { [self.compiler parsedLiteral:text asserted:NO]; }
             / AT Literal   { [self.compiler parsedLiteral:text asserted:YES]; }
-            / Class     { [self.compiler parsedClass:text]; }
-            / Regex     { [self.compiler parsedRegex:text]; }
-            / DOT       { [self.compiler parsedDot]; }
+            / Class        { [self.compiler parsedClass:text]; }
+            / Regex        { [self.compiler parsedRegex:text]; }
+            / DOT          { [self.compiler parsedDot]; }
 
-Effect     <- Code      { [self.compiler parsedCode:text]; }
-			/ Action    { [self.compiler parsedAction:text returnValue:NO]; }
+Effect     <- Code         { [self.compiler parsedCode:text]; }
+            / NamedCapture { [self.compiler parsedNamedCapture:text]; }
+			/ Action       { [self.compiler parsedAction:text returnValue:NO]; }
 			/ CIRCUMFLEX Action    { [self.compiler parsedAction:text returnValue:YES]; }
-			/ Fail		{ [self.compiler parsedFail: text]; }
-            / BEGIN_CAP { [self.compiler beginCapture]; }
-            / END_CAP   { [self.compiler endCapture]; }
+			/ Fail		   { [self.compiler parsedFail: text]; }
+            / BEGIN_CAP    { [self.compiler beginCapture]; }
+            / END_CAP      { [self.compiler endCapture]; }
 
 # Lexical syntax
 Identifier <- < IdentStart IdentCont* > Spacing
@@ -89,6 +90,7 @@ Char       <- '\\' [nrt'"=\[\]\\]
             / !'\\' .
 
 LEFTARROW  <- '<-' Spacing
+RIGHTARROW  <- '->' Spacing
 SLASH      <- '/' Spacing
 AND        <- '&' Spacing
 NOT        <- '!' Spacing
@@ -118,6 +120,7 @@ INTERFACE  <- '@interface' (!EndOfLine .)*
 END        <- '@end' Spacing
 CLASSDECL		<- '@class' HorizSpace+
 PROTOCOLDECL	<- '@protocol' HorizSpace+
+NamedCapture    <- RIGHTARROW (Identifier / Literal)
 BEGIN_CAP  <- '<' Spacing
 END_CAP    <- '>' Spacing
 

@@ -112,6 +112,73 @@ C statements can also be evaluated for truth, just like any other rule.
     Rule <- A !{ 0 /* this rule will never match */ } B
           / C &{ 1 /* this rule will always match */ } D
 
+## Named Captures
+
+Named captures provde a way to capture data parsed without needing to drop into a code
+block for each piece of data. This enables the grammar to look cleaner while still allowing
+the compiler access to data. Named captures are described in grammar by use of a right arrow
+and capture name in the grammar.
+
+Consider a parser that needs to process input such as `Peter Piper picked a peck of
+pickled peppers.`, capturing a name, a verb, a quantity and a noun. The following grammar
+(where the terminals are undefined here but are relatively straight forward) describes that, while
+allowing input to be captured without named captures:
+
+    Sentence <-
+        Name     { [self.compiler setName:text]; }
+        Verb     { [self.compiler setVerb:text]; }
+        Quantity { [self.compiler setQuanty:text]; }
+        ' of '
+        Noun     { [self.compiler setNoun:text];
+        { [self.compiler compileSentence]; }
+
+The same problem can be solved via named captures grammar as shown here:
+
+    Sentence <-
+        Name -> name
+        Verb -> verb
+        Quantity -> quantity
+        ' of '
+        Noun -> noun
+        { [self.compiler compileSentence]; }
+
+The code in the compiler's `compileSentence` method will of course differ based on the
+grammar choice made. When using named captures, the compiler will need to retrieve the
+values of interest from the parser:
+
+     - (void)compileSentence {
+        NSLog(@"%@ %@ %@ of %@",
+            [parser valueFor:@"name"],
+            [parser valueFor:@"verb"],
+            [parser valueFor:@"quantity"],
+            [parser valueFor:@"noun"]);
+    }
+
+Names are generally typical grammar identifiers. If for some reason one wishes to use a name
+which does not adhere to identifier format `([A-Za-z-][A-Za-z0-9-]*)` the name can be
+enclosed within single quotes: `TERMINAL <- TERM2 ->'* noncompliant name *'`
+
+The following parser API is available to the compiler in support of named captures:
+
+    - (void)setField:(NSString *)field value:(NSString *)value;
+    - (NSString *)valueForField:(NSString *)field;
+    - (void)removeField:(NSString *)field;
+    - (void)removeAllFields;
+    @property (readonly) NSDictionary <NSString *, NSString *> *allFields;
+
+Caveat: The following grammar does not function in the way one would probably expect:
+
+    TERMINAL <- ( GROUP OF THINGS ) -> group
+
+In this case, since the named capture is following a group, one would likely expect the entire
+group to be captured. Named captures are (currently) unaware of groups though; they only
+operate on the last thing seen, so in this case THINGS will be captured.
+
+To work around this, you may do the following:
+
+    TERMINAL       <- GROUP_TERMINAL -> group
+    GROUP_TERMINAL <- ( GROUP OF THINGS )
+
 ## Regular Expressions
 
 Regular expressions may be used as terminals, and their captures may be made available

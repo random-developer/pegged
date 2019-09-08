@@ -10,6 +10,7 @@
 
 #import "Action.h"
 #import "CClass.h"
+#import "CaptureField.h"
 #import "Code.h"
 #import "Condition.h"
 #import "Dot.h"
@@ -355,6 +356,12 @@
 {
     Condition *condition = [Condition conditionWithExpression:code];
     [_stack addObject:condition];
+}
+
+
+- (void)parsedNamedCapture:(NSString *)captureName
+{
+    [_stack addObject:[CaptureField fieldWithName:captureName]];
 }
 
 

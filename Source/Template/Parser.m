@@ -93,6 +93,11 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 	
 	// The context used to parameterize parsing.
 	NSDictionary *_context;
+
+    // The range of the most recent substring parsed
+    NSRange _recentSubstringRange;
+
+    NSMutableDictionary <NSString *, NSString *> *_allFields;
 }
 
 // Public parser state information
@@ -100,6 +105,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 @property (readonly) NSUInteger captureEnd;
 @property (readonly) NSString* string;
 @property (readonly) NSUInteger index;
+@property (readonly) NSString *recentSubstring;
 
 @end
 
@@ -197,6 +203,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 	// Try to match
     if (rule(self, startIndex, &temporaryCaptures)) {
 		*localCaptures = temporaryCaptures;
+        _recentSubstringRange = NSMakeRange(startIndex, _index - startIndex);
         return YES;
 	}
 	
@@ -222,7 +229,7 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
         return NO;
 	
 	// Match others
-	NSInteger lastIndex = _index;
+    NSInteger lastIndex = _index;
 	
     while ([self matchOneWithCaptures:localCaptures startIndex:startIndex block:rule]) {
 		// The match did not consume any string, but matched. It should be something like (.*)*. So we can stop to prevent an infinite loop.
@@ -231,7 +238,8 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 		
 		lastIndex = _index;
 	}
-    
+
+    _recentSubstringRange = NSMakeRange(startIndex, _index - startIndex);
 	return YES;
 }
 
@@ -250,8 +258,10 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 	for (ParserClassRule rule in rules) {
 		NSInteger localCaptures = 0;
 		
-		if ([self matchOneWithCaptures:&localCaptures startIndex:_index block:rule])
+        if ([self matchOneWithCaptures:&localCaptures startIndex:_index block:rule]) {
+            _recentSubstringRange = NSMakeRange(lastIndex, _index - lastIndex);
 			return YES;
+        }
 	}
 
 	if (asserted)
@@ -277,11 +287,13 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 		++_index;
 	}
 
+    _recentSubstringRange = NSMakeRange(saved, _index - saved);
     return YES;
 }
 
 - (BOOL)matchRegex:(char *)regex startIndex:(NSInteger)startIndex asserted:(BOOL)asserted
 {
+    NSInteger lastIndex = _index;
     NSString *anchoredExpression = [NSString stringWithFormat:@"^%s", regex];
     NSRegularExpressionOptions options = NSRegularExpressionAnchorsMatchLines;
     NSRegularExpression *rx = [NSRegularExpression regularExpressionWithPattern:anchoredExpression options:options error:nil];
@@ -303,21 +315,28 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 
     _regexCaptures = captures.copy;
     _index += captures[0].length;
+    _recentSubstringRange = NSMakeRange(lastIndex, _index - lastIndex);
     return YES;
 }
 
 - (BOOL)matchClass:(unsigned char *)bits
 {
+    NSInteger lastIndex = _index;
     if (_index >= _limit) return NO;
 	
     int c = [_string characterAtIndex:_index];
     
 	if (bits[c >> 3] & (1 << (c & 7))) {
         ++_index;
+        _recentSubstringRange = NSMakeRange(lastIndex, _index - lastIndex);
         return YES;
     }
 	
     return NO;
+}
+
+- (NSString *)recentSubstring {
+    return [_string substringWithRange:_recentSubstringRange];
 }
 
 - (void)setErrorWithMessage:(NSString *)message location:(NSInteger)location length:(NSInteger)length
@@ -414,6 +433,23 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 	return _currentCapture.parsedRange;
 }
 
+- (void)setField:(NSString *)field value:(NSString *)value
+{
+    _allFields[field] = value;
+}
+- (NSString *)valueForField:(NSString *)field
+{
+    return _allFields[field];
+}
+- (void)removeField:(NSString *)field
+{
+    [_allFields removeObjectForKey:field];
+}
+- (void)removeAllFields
+{
+    [_allFields removeAllObjects];
+}
+
 
 #pragma mark - Rule definitions
 
@@ -464,6 +500,8 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 
 	_captureStart= _captureEnd= _index;
     _capturing = YES;
+
+    _allFields = [NSMutableDictionary new];
     
 	// Do string matching
     BOOL matched = [self matchRule:ruleName startIndex:_index asserted:YES];
@@ -518,6 +556,11 @@ typedef id (^ParserClassAction)(ParserClass *self, NSString *text, NSRange range
 	_context = nil;
 	
 	return matched;
+}
+
+
+- (NSDictionary <NSString *, NSString *> *)allFields {
+    return _allFields.copy;
 }
 
 

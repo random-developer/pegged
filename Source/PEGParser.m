@@ -93,6 +93,11 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 	
 	// The context used to parameterize parsing.
 	NSDictionary *_context;
+
+    // The range of the most recent substring parsed
+    NSRange _recentSubstringRange;
+
+    NSMutableDictionary <NSString *, NSString *> *_allFields;
 }
 
 // Public parser state information
@@ -100,6 +105,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 @property (readonly) NSUInteger captureEnd;
 @property (readonly) NSString* string;
 @property (readonly) NSUInteger index;
+@property (readonly) NSString *recentSubstring;
 
 @end
 
@@ -157,6 +163,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 		[self addRule:__Literal withName:@"Literal"];
 		[self addRule:__LocalImportIdentifier withName:@"LocalImportIdentifier"];
 		[self addRule:__NOT withName:@"NOT"];
+		[self addRule:__NamedCapture withName:@"NamedCapture"];
 		[self addRule:__OPEN withName:@"OPEN"];
 		[self addRule:__OPTION withName:@"OPTION"];
 		[self addRule:__PERCENT withName:@"PERCENT"];
@@ -170,6 +177,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 		[self addRule:__PropParamaters withName:@"PropParamaters"];
 		[self addRule:__ProtocolIdent withName:@"ProtocolIdent"];
 		[self addRule:__QUESTION withName:@"QUESTION"];
+		[self addRule:__RIGHTARROW withName:@"RIGHTARROW"];
 		[self addRule:__Range withName:@"Range"];
 		[self addRule:__Regex withName:@"Regex"];
 		[self addRule:__SLASH withName:@"SLASH"];
@@ -259,6 +267,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 	// Try to match
     if (rule(self, startIndex, &temporaryCaptures)) {
 		*localCaptures = temporaryCaptures;
+        _recentSubstringRange = NSMakeRange(startIndex, _index - startIndex);
         return YES;
 	}
 	
@@ -284,7 +293,7 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
         return NO;
 	
 	// Match others
-	NSInteger lastIndex = _index;
+    NSInteger lastIndex = _index;
 	
     while ([self matchOneWithCaptures:localCaptures startIndex:startIndex block:rule]) {
 		// The match did not consume any string, but matched. It should be something like (.*)*. So we can stop to prevent an infinite loop.
@@ -293,7 +302,8 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 		
 		lastIndex = _index;
 	}
-    
+
+    _recentSubstringRange = NSMakeRange(startIndex, _index - startIndex);
 	return YES;
 }
 
@@ -312,8 +322,10 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 	for (PEGParserRule rule in rules) {
 		NSInteger localCaptures = 0;
 		
-		if ([self matchOneWithCaptures:&localCaptures startIndex:_index block:rule])
+        if ([self matchOneWithCaptures:&localCaptures startIndex:_index block:rule]) {
+            _recentSubstringRange = NSMakeRange(lastIndex, _index - lastIndex);
 			return YES;
+        }
 	}
 
 	if (asserted)
@@ -339,11 +351,13 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 		++_index;
 	}
 
+    _recentSubstringRange = NSMakeRange(saved, _index - saved);
     return YES;
 }
 
 - (BOOL)matchRegex:(char *)regex startIndex:(NSInteger)startIndex asserted:(BOOL)asserted
 {
+    NSInteger lastIndex = _index;
     NSString *anchoredExpression = [NSString stringWithFormat:@"^%s", regex];
     NSRegularExpressionOptions options = NSRegularExpressionAnchorsMatchLines;
     NSRegularExpression *rx = [NSRegularExpression regularExpressionWithPattern:anchoredExpression options:options error:nil];
@@ -365,21 +379,28 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 
     _regexCaptures = captures.copy;
     _index += captures[0].length;
+    _recentSubstringRange = NSMakeRange(lastIndex, _index - lastIndex);
     return YES;
 }
 
 - (BOOL)matchClass:(unsigned char *)bits
 {
+    NSInteger lastIndex = _index;
     if (_index >= _limit) return NO;
 	
     int c = [_string characterAtIndex:_index];
     
 	if (bits[c >> 3] & (1 << (c & 7))) {
         ++_index;
+        _recentSubstringRange = NSMakeRange(lastIndex, _index - lastIndex);
         return YES;
     }
 	
     return NO;
+}
+
+- (NSString *)recentSubstring {
+    return [_string substringWithRange:_recentSubstringRange];
 }
 
 - (void)setErrorWithMessage:(NSString *)message location:(NSInteger)location length:(NSInteger)length
@@ -474,6 +495,23 @@ typedef id (^PEGParserAction)(PEGParser *self, NSString *text, NSRange range, NS
 - (NSRange)rangeForCurrentAction
 {
 	return _currentCapture.parsedRange;
+}
+
+- (void)setField:(NSString *)field value:(NSString *)value
+{
+    _allFields[field] = value;
+}
+- (NSString *)valueForField:(NSString *)field
+{
+    return _allFields[field];
+}
+- (void)removeField:(NSString *)field
+{
+    [_allFields removeObjectForKey:field];
+}
+- (void)removeAllFields
+{
+    [_allFields removeAllObjects];
 }
 
 
@@ -1344,6 +1382,20 @@ static PEGParserRule __Effect = ^(PEGParser *parser, NSInteger startIndex, NSInt
 			return YES;
 	
 		if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+			if (![parser matchRule: @"NamedCapture" startIndex:startIndex asserted:NO])
+				return NO;
+			
+			[parser performActionUsingCaptures:*localCaptures startIndex:startIndex block:^id(PEGParser *self, NSString *text, NSRange range, NSArray <NSString *> *capture, NSString **errorCode) {
+				 [self.compiler parsedNamedCapture:text];
+			
+				return nil;
+			}];
+		
+			return YES;
+		}])
+			return YES;
+	
+		if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
 			if (![parser matchRule: @"Action" startIndex:startIndex asserted:NO])
 				return NO;
 			
@@ -1953,6 +2005,32 @@ static PEGParserRule __NOT = ^(PEGParser *parser, NSInteger startIndex, NSIntege
 	return YES;
 };
 
+static PEGParserRule __NamedCapture = ^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+	if (![parser matchRule: @"RIGHTARROW" startIndex:startIndex asserted:NO])
+		return NO;
+	
+	if (![parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+		if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+			if (![parser matchRule: @"Identifier" startIndex:startIndex asserted:NO])
+				return NO;
+			return YES;
+		}])
+			return YES;
+	
+		if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+			if (![parser matchRule: @"Literal" startIndex:startIndex asserted:NO])
+				return NO;
+			return YES;
+		}])
+			return YES;
+	
+		return NO;
+	}])
+		return NO;
+	
+	return YES;
+};
+
 static PEGParserRule __OPEN = ^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
 	if (![parser matchString:"(" startIndex:startIndex asserted:NO])
 		return NO;
@@ -2486,6 +2564,16 @@ static PEGParserRule __QUESTION = ^(PEGParser *parser, NSInteger startIndex, NSI
 	return YES;
 };
 
+static PEGParserRule __RIGHTARROW = ^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
+	if (![parser matchString:"->" startIndex:startIndex asserted:NO])
+		return NO;
+	
+	if (![parser matchRule: @"Spacing" startIndex:startIndex asserted:NO])
+		return NO;
+	
+	return YES;
+};
+
 static PEGParserRule __Range = ^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
 	if (![parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
 		if ([parser matchOneWithCaptures:localCaptures startIndex:startIndex block:^(PEGParser *parser, NSInteger startIndex, NSInteger *localCaptures) {
@@ -2788,6 +2876,8 @@ static PEGParserRule __SwiftImportIdentifier = ^(PEGParser *parser, NSInteger st
 
 	_captureStart= _captureEnd= _index;
     _capturing = YES;
+
+    _allFields = [NSMutableDictionary new];
     
 	// Do string matching
     BOOL matched = [self matchRule:ruleName startIndex:_index asserted:YES];
@@ -2842,6 +2932,11 @@ static PEGParserRule __SwiftImportIdentifier = ^(PEGParser *parser, NSInteger st
 	_context = nil;
 	
 	return matched;
+}
+
+
+- (NSDictionary <NSString *, NSString *> *)allFields {
+    return _allFields.copy;
 }
 
 

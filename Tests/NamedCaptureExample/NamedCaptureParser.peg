@@ -1,0 +1,19 @@
+# This grammar is merely to test ability to capture parsed input to named
+# fields. This functionality allows a compiler (and the grammar code to support
+# it) to be less granular -- single functions that aggreagte multiple captures.
+
+
+TEST <- (ENTITY _)+
+
+ENTITY <- 'string'->string       # literal test
+        / REGEX->REGEX_regex     # regex test
+        / [Z]->Z                 # class test
+        / GROUP->group
+        / WORD->identifier       # this should come last
+
+
+GROUP <- ( 'gro' 'up' )
+REGEX <- =REGEX_.....=
+WORD  <- [A-Za-z]+ ->'*last_word'
+_     <- ' '*
+

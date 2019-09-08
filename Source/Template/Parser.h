@@ -144,6 +144,14 @@ extern NSString *ParserClassErrorTypeKey;
  */
 - (NSRange)rangeForCurrentAction;
 
+/*!
+ @abstract Allows arbitrary fields to be stored/retrieved
+ */
+- (void)setField:(NSString *)field value:(NSString *)value;
+- (NSString *)valueForField:(NSString *)field;
+- (void)removeField:(NSString *)field;
+- (void)removeAllFields;
+@property (readonly) NSDictionary <NSString *, NSString *> *allFields;
 @end
 
 

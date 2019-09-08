@@ -60,7 +60,10 @@
 		BECEF81910DB3CA50067BA1E /* PEGParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BECEF81810DB3CA50067BA1E /* PEGParser.m */; };
 		BECEF82610DC1F4F0067BA1E /* Compiler.m in Sources */ = {isa = PBXBuildFile; fileRef = BECEF82510DC1F4F0067BA1E /* Compiler.m */; };
 		BEDCAA2810F82C46003C0737 /* Condition.m in Sources */ = {isa = PBXBuildFile; fileRef = BEDCAA2710F82C46003C0737 /* Condition.m */; };
+		F668E55E2322AA70002A3AB3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F668E55D2322AA70002A3AB3 /* main.m */; };
+		F668E5632322AB98002A3AB3 /* NamedCaptureParser.peg in Sources */ = {isa = PBXBuildFile; fileRef = F668E5622322AAC9002A3AB3 /* NamedCaptureParser.peg */; };
 		F6B28CB320543DD8009502AB /* Regex.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B28CB120543DD8009502AB /* Regex.m */; };
+		F6C1CD4C2322B0FC00445CCC /* CaptureField.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C1CD4A2322B0FC00445CCC /* CaptureField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -86,7 +89,7 @@
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).h",
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).m",
 			);
-			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"\n";
 		};
 		BE94313610F8315100FA4E0A /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -99,6 +102,18 @@
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).m",
 			);
 			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"";
+		};
+		F668E5642322AD77002A3AB3 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.peg";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).h",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).m",
+			);
+			script = "${BUILT_PRODUCTS_DIR}/pegged --output-dir \"$DERIVED_FILE_DIR\" \"$INPUT_FILE_PATH\"\n";
 		};
 /* End PBXBuildRule section */
 
@@ -159,7 +174,26 @@
 			remoteGlobalIDString = BE3FF91C10F0ECF90020AEB9;
 			remoteInfo = Calculator;
 		};
+		F6C1CD482322B00300445CCC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
+			remoteInfo = pegged;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F668E5592322AA70002A3AB3 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* pegged.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pegged.m; sourceTree = "<group>"; };
@@ -234,9 +268,14 @@
 		BEDCAA2610F82C46003C0737 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		BEDCAA2710F82C46003C0737 /* Condition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Condition.m; sourceTree = "<group>"; };
 		C6859EA3029092ED04C91782 /* pegged.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = pegged.1; sourceTree = "<group>"; };
+		F668E55B2322AA70002A3AB3 /* NamedCaptures */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = NamedCaptures; sourceTree = BUILT_PRODUCTS_DIR; };
+		F668E55D2322AA70002A3AB3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F668E5622322AAC9002A3AB3 /* NamedCaptureParser.peg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NamedCaptureParser.peg; sourceTree = "<group>"; };
 		F6B28CB120543DD8009502AB /* Regex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Regex.m; sourceTree = "<group>"; };
 		F6B28CB220543DD8009502AB /* Regex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Regex.h; sourceTree = "<group>"; };
 		F6B60A4B20461FD900C2ADE4 /* Syntax.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Syntax.markdown; sourceTree = "<group>"; };
+		F6C1CD4A2322B0FC00445CCC /* CaptureField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptureField.m; sourceTree = "<group>"; };
+		F6C1CD4B2322B0FC00445CCC /* CaptureField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureField.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -279,6 +318,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F668E5582322AA70002A3AB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -300,6 +346,8 @@
 				7988067A177C94C50003B729 /* Template */,
 				BEDCAA2610F82C46003C0737 /* Condition.h */,
 				BEDCAA2710F82C46003C0737 /* Condition.m */,
+				F6C1CD4B2322B0FC00445CCC /* CaptureField.h */,
+				F6C1CD4A2322B0FC00445CCC /* CaptureField.m */,
 				BE3FF7D810EEFF540020AEB9 /* LookAhead.h */,
 				BE3FF7D910EEFF540020AEB9 /* LookAhead.m */,
 				BE3FF76F10EE97790020AEB9 /* Quantifier.h */,
@@ -363,6 +411,7 @@
 				BE94313A10F8315100FA4E0A /* EvenStrings */,
 				7988066F177C7AF60003B729 /* AST */,
 				657E3A071945A23500B3EC52 /* SwiftCalculatorTest.xctest */,
+				F668E55B2322AA70002A3AB3 /* NamedCaptures */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -417,6 +466,7 @@
 				657E3A081945A23500B3EC52 /* SwiftCalculatorTest */,
 				7912E0D8177C76B70058141C /* AST */,
 				BE3FF91310F0E9EA0020AEB9 /* Calculator */,
+				F668E55C2322AA70002A3AB3 /* NamedCaptureExample */,
 				BEDCAA0910F8282F003C0737 /* EvenStrings */,
 			);
 			path = Tests;
@@ -451,6 +501,15 @@
 				C6859EA3029092ED04C91782 /* pegged.1 */,
 			);
 			path = Documentation;
+			sourceTree = "<group>";
+		};
+		F668E55C2322AA70002A3AB3 /* NamedCaptureExample */ = {
+			isa = PBXGroup;
+			children = (
+				F668E5622322AAC9002A3AB3 /* NamedCaptureParser.peg */,
+				F668E55D2322AA70002A3AB3 /* main.m */,
+			);
+			path = NamedCaptureExample;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -568,6 +627,25 @@
 			productReference = BE94313A10F8315100FA4E0A /* EvenStrings */;
 			productType = "com.apple.product-type.tool";
 		};
+		F668E55A2322AA70002A3AB3 /* NamedCaptures */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F668E55F2322AA70002A3AB3 /* Build configuration list for PBXNativeTarget "NamedCaptures" */;
+			buildPhases = (
+				F668E5572322AA70002A3AB3 /* Sources */,
+				F668E5582322AA70002A3AB3 /* Frameworks */,
+				F668E5592322AA70002A3AB3 /* CopyFiles */,
+			);
+			buildRules = (
+				F668E5642322AD77002A3AB3 /* PBXBuildRule */,
+			);
+			dependencies = (
+				F6C1CD492322B00300445CCC /* PBXTargetDependency */,
+			);
+			name = NamedCaptures;
+			productName = NamedCaptures;
+			productReference = F668E55B2322AA70002A3AB3 /* NamedCaptures */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -582,6 +660,10 @@
 					};
 					657E3A061945A23500B3EC52 = {
 						CreatedOnToolsVersion = 6.0;
+					};
+					F668E55A2322AA70002A3AB3 = {
+						CreatedOnToolsVersion = 10.2;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -603,6 +685,7 @@
 				BEDCA80A10F149B6003C0737 /* Tests */,
 				650F37DB1949B261002FFED6 /* SwiftCalculatorPegRun */,
 				657E3A061945A23500B3EC52 /* SwiftCalculatorTest */,
+				F668E55A2322AA70002A3AB3 /* NamedCaptures */,
 			);
 		};
 /* End PBXProject section */
@@ -699,6 +782,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9A0486AA7600D96B5E /* pegged.m in Sources */,
+				F6C1CD4C2322B0FC00445CCC /* CaptureField.m in Sources */,
 				F6B28CB320543DD8009502AB /* Regex.m in Sources */,
 				BECEF81910DB3CA50067BA1E /* PEGParser.m in Sources */,
 				BECEF82610DC1F4F0067BA1E /* Compiler.m in Sources */,
@@ -740,6 +824,15 @@
 			files = (
 				BE94313E10F8317100FA4E0A /* EvenParser.peg in Sources */,
 				BE94314010F8317800FA4E0A /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F668E5572322AA70002A3AB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F668E5632322AB98002A3AB3 /* NamedCaptureParser.peg in Sources */,
+				F668E55E2322AA70002A3AB3 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -785,6 +878,11 @@
 			isa = PBXTargetDependency;
 			target = BE3FF91C10F0ECF90020AEB9 /* Calculator */;
 			targetProxy = BEDCA80D10F149BA003C0737 /* PBXContainerItemProxy */;
+		};
+		F6C1CD492322B00300445CCC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* pegged */;
+			targetProxy = F6C1CD482322B00300445CCC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1196,6 +1294,74 @@
 			};
 			name = Release;
 		};
+		F668E5602322AA70002A3AB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F668E5612322AA70002A3AB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1267,6 +1433,15 @@
 			buildConfigurations = (
 				BEDCA80B10F149B6003C0737 /* Debug */,
 				BEDCA80C10F149B6003C0737 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F668E55F2322AA70002A3AB3 /* Build configuration list for PBXNativeTarget "NamedCaptures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F668E5602322AA70002A3AB3 /* Debug */,
+				F668E5612322AA70002A3AB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
